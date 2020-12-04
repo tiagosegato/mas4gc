@@ -1,4 +1,3 @@
-
 from pade.misc.utility import display_message, start_loop
 from pade.core.agent import Agent
 from pade.acl.messages import ACLMessage
@@ -6,6 +5,8 @@ from pade.acl.aid import AID
 from pade.behaviours.protocols import FipaRequestProtocol
 from pade.behaviours.protocols import TimedBehaviour
 from sys import argv
+
+import actions
 
 ### CLASSE DE COMPORTAMENTOS TEMPORAIS - FIPA ###
 #comportamentos de tempo em tempo do Agente PAA
@@ -33,6 +34,7 @@ class CompRequest(FipaRequestProtocol):
     def handle_request(self, message): 
         super(CompRequest, self).handle_request(message)
         display_message(self.agent.aid.localname, 'EvaluationReport received!')
+        display_message(self.agent.aid.localname, 'dados vem aqui...')# precisa recever os dados aqui...
         display_message(self.agent.aid.localname, 'Vou analisar o ER e calcular um novo tratamento...')
         #efetua os cálculos que tem que efetuar....
         reply = message.create_reply() #método permite apenas responder a quem solicitou, não precisa definir
@@ -40,8 +42,8 @@ class CompRequest(FipaRequestProtocol):
         reply.set_content("Recebi seu EvaluationReport, tks! \n") #seta o conteúdo 
         self.agent.send(reply) #envia o reply
 
+#FIPA Request Behaviour of the PAA agent
 class CompRequest2(FipaRequestProtocol):
-    """FIPA Request Behaviour of the PAA agent"""
     def __init__(self, agent, message):
         super(CompRequest2, self).__init__(agent=agent, message=message, is_initiator=True)
 
@@ -49,20 +51,22 @@ class CompRequest2(FipaRequestProtocol):
         display_message(self.agent.aid.localname, message.content)
 
 
-
-
 #CLASSE QUE DEFINE O AGENTE PAA
 class PaaAgent(Agent):
     def __init__(self, aid, pta_agent_name):
         super(PaaAgent, self).__init__(aid=aid)
 
+        #Consultando os dados do paciente e glycemia do Glycon
+        print('Consultando paciente e glicemia do Glycon...')
+        dados = actions.consultarGlycon()
+
         # message that requests pta of PTA agent.
         message = ACLMessage(ACLMessage.REQUEST) #cria a mensagem por meio da classe ACLMessage
         message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL) #seta o protocolo da msg
         message.add_receiver(AID(name=pta_agent_name)) #adiciona pra quem a mensagem vai
-        message.set_content('EvaluationReport') #seta o conteúdo
+        message.set_content('dados') #seta o conteúdo
 
-        # executa o que está implementado no CompRequest2 a cada 8 segundos
+        # executa o que está implementado no CompRequest2 a cada 10 segundos
         self.comport_request = CompRequest2(self, message) #instancia o comportamento de request
         self.comport_temp = ComportTemporal(self, 10.0, message) #instanciando a classe ComportTemporal
 
