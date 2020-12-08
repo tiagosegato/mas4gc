@@ -57,14 +57,14 @@ class PaaAgent(Agent):
         super(PaaAgent, self).__init__(aid=aid)
 
         #Consultando os dados do paciente e glycemia do Glycon
-        print('Consultando paciente e glicemia do Glycon...')
+        print('PAA: Consultando paciente e glicemia do Glycon...')
         dados = actions.consultarGlycon()
 
         # message that requests pta of PTA agent.
         message = ACLMessage(ACLMessage.REQUEST) #cria a mensagem por meio da classe ACLMessage
         message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL) #seta o protocolo da msg
         message.add_receiver(AID(name=pta_agent_name)) #adiciona pra quem a mensagem vai
-        message.set_content('dados') #seta o conteúdo
+        message.set_content(dados) #seta o conteúdo
 
         # executa o que está implementado no CompRequest2 a cada 10 segundos
         self.comport_request = CompRequest2(self, message) #instancia o comportamento de request
