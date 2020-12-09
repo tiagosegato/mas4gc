@@ -13,7 +13,7 @@ Para executar este SMA basta seguir os seguintes passos:
 5 - Ignore o pedido de usuário e senha teclando enter para ambas
 
 A figura 1 representa os passos 3, 4 e 5:
-![alt text](https://github.com/[username]/[reponame]/blob/[branch]/image.jpg?raw=true)
+![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/imagens/pro-1.png?raw=true)
 Figura 1 - Executando o SMA
 
 Na sequência a aplicação já entrará em execução.
