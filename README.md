@@ -20,8 +20,8 @@ Na sequência a aplicação já entrará em execução.
 
 A figura 2 representa o framework PADE em execução:
 ![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/imagens/pro-2.png?raw=true)
-Figura 1 - PADE em execução
+Figura 2 - PADE em execução
 
 A figura 3 apresenta a troca de mensagens entre os agentes
-![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/imagens/pro-4.png?raw=true)
-Figura 1 - Troca de mensagens entre os agentes
+![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/imagens/pro-3.png?raw=true)
+Figura 3 - Troca de mensagens entre os agentes
