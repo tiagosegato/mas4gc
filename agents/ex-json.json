@@ -1,0 +1,31 @@
+{
+    '_id': ObjectId('5f53e004b35f7f0017804de6'), 
+    'glicemia': [
+        {'dataHoraColeta': '2020-09-05 15:59', 'tipoColeta': 'Bioquímica', 'tipoAlimentacao': 'Zero', 'valorGlicemia': 110, 'observacoes': ''},
+        {'dataHoraColeta': '2020-09-05 15:59', 'tipoColeta': 'Bioquímica', 'tipoAlimentacao': 'Zero', 'valorGlicemia': 110, 'observacoes': ''}
+    ], 
+    'aplicacao': [
+        {'dataHoraAplicacao': '2020-09-05 15:59', 'tipoAplicacao': 'de resgate', 'viaAdministracao': 'intravenosa', 'droga': 'Insulina Ultra Rápida', 'posologia': '123', 'observacoes': ''}
+    ], 
+    'prontuario': 'Abc123', 
+    'nome': 'João', 
+    'dataNascimento': datetime.datetime(1993, 3, 11, 0, 0),
+    'sexo': 'Masculino', 
+    'peso': 70.5, 
+    'altura': 170, 
+    'tipoInternacao': 'Clínica', 
+    'diabetes': 'Ignorado', 
+    'insuficienciaRenal': 'Ignorado', 
+    'corticoide': 'Ignorado', 
+    'infeccao': 'Ignorado', 
+    'sindromeDescRespiratorio': 'Ignorado', 
+    'instabilidadeHemodinamica': 'Ignorado', 
+    'planoAplicacao': '6#12#18', 
+    'observacoes': '', 
+    'dataHoraInternacao': datetime.datetime(2020, 9, 5, 15, 58), 
+    'statusPaciente': 'internado', 
+    'imc': 24.394463667820073, 
+    'createDate': datetime.datetime(2020, 9, 5, 18, 59, 17, 155000), 
+    'updateDate': datetime.datetime(2020, 9, 5, 18, 59, 17, 155000), 
+    '__v': 3
+}

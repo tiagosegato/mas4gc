@@ -7,6 +7,7 @@ from pade.behaviours.protocols import TimedBehaviour
 from sys import argv
 
 import actions
+import pickle
 
 ### CLASSE DE COMPORTAMENTOS TEMPORAIS - FIPA ###
 #comportamentos de tempo em tempo do Agente PAA
@@ -32,14 +33,14 @@ class CompRequest(FipaRequestProtocol):
 
     # esse método é executada quando chega uma mensagem do tipo request
     def handle_request(self, message): 
+
         super(CompRequest, self).handle_request(message)
-        display_message(self.agent.aid.localname, 'EvaluationReport received!')
-        display_message(self.agent.aid.localname, 'dados vem aqui...')# precisa recever os dados aqui...
-        display_message(self.agent.aid.localname, 'Vou analisar o ER e calcular um novo tratamento...')
+        display_message(self.agent.aid.localname, 'Segue o Relatório:')
+        display_message(self.agent.aid.localname, message.content)# precisa receber os dados aqui...
         #efetua os cálculos que tem que efetuar....
         reply = message.create_reply() #método permite apenas responder a quem solicitou, não precisa definir
         reply.set_performative(ACLMessage.INFORM) #setando o rótulo da mensagem (INFORM)
-        reply.set_content("Recebi seu EvaluationReport, tks! \n") #seta o conteúdo 
+        reply.set_content("Relatório de Avaliação Recebido!") #seta o conteúdo 
         self.agent.send(reply) #envia o reply
 
 #FIPA Request Behaviour of the PAA agent
@@ -56,15 +57,17 @@ class PaaAgent(Agent):
     def __init__(self, aid, pta_agent_name):
         super(PaaAgent, self).__init__(aid=aid)
 
-        #Consultando os dados do paciente e glycemia do Glycon
-        print('PAA: Consultando paciente e glicemia do Glycon...')
-        dados = actions.consultarGlycon()
-
         # message that requests pta of PTA agent.
         message = ACLMessage(ACLMessage.REQUEST) #cria a mensagem por meio da classe ACLMessage
         message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL) #seta o protocolo da msg
         message.add_receiver(AID(name=pta_agent_name)) #adiciona pra quem a mensagem vai
-        message.set_content(dados) #seta o conteúdo
+
+        #print('PAA: Determinando a situação do paciente...')
+        #relatorio = 'relatorio'
+        relatorio = actions.determinarSituacaoPaciente()
+        #relatorio = pickle.dumps(relatorio_paa)
+
+        message.set_content(relatorio) #seta o conteúdo
 
         # executa o que está implementado no CompRequest2 a cada 10 segundos
         self.comport_request = CompRequest2(self, message) #instancia o comportamento de request

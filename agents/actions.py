@@ -1,25 +1,28 @@
 import conexao
 
 # listando apenas nome, data e valor da glicemia de um paciente
-def consultarGlycon():
+def determinarSituacaoPaciente():
     print('Novo paciente encontrado. Coletando os dados...')
     print('')
+    #consultando dados específicos do último paciente cadastrado
     document = conexao.collection.find({}, {"_id": 0, "nome": 1, "glicemia.valorGlicemia": 1 }).sort("updateDate", -1).limit(1)
 
+    # nome, quantidade de coletas e as glicemias
     paciente = document[0]["nome"]
     coletas = len(document[0]["glicemia"])
     glicemias = document[0]["glicemia"]
-
+    # exibindo os dados coletados
     print('Paciente: ', paciente)
     print('Quantidade de Coletas: ', coletas)
     print('Glicemias coletadas: ', glicemias)
+    print('')
 
     if coletas == 1:
         #pega apenas o valor da glicemia coletada
         for x in glicemias[0].values():
             glicemia = int(x)
 
-        # mostra de acordo com a tabela
+        # mostra a situação de acordo com a tabela
         if glicemia >= 0 and glicemia <= 49:
             situacao = 'hypoS'
         elif glicemia >=50 and glicemia <= 99:
@@ -34,30 +37,28 @@ def consultarGlycon():
             situacao = 'hyperVS'
         else: print('glicemia inválida!')
         
-        print('Situação', situacao)
-        print('')
+        '''print('Situação', situacao)
+        print('')'''
 
     elif coletas > 1:
+        #caso tenha mais de uma glicemia coletada
         for x in document:
-            #TODO
-            print("calcular próxima glicemia para os dados:")
+            #TODO calcular as probabilidades de hipo e hiper futuras
+            print("calcular próxima glicemia, com base nos dados:")
             print(x)
 
+    #gerando o Relatório de Avaliação para enviar ao PTA
+    relatorio = {'Paciente': paciente, 'Situacao':situacao}
+    #print('Relatório de Avaliação:')
+    #print(relatorio)
+    #print('')
 
-# analizar os dados coletados determinando a situação do paciente
-def gerarRelatorioAvaliacao():
-    
-    consultarGlycon()
+    return relatorio
 
-    relatorio = 'dados'
-    
-    
-    print(relatorio)
 
-    return
 
 ### TESTES #####
-gerarRelatorioAvaliacao()
+#determinarSituacaoPaciente()
 
 ### OUTRAS FUNÇÕES ###
 
@@ -89,5 +90,3 @@ def listarAtual():
     for x in atual:
         print(x)
         print('')
-
-
