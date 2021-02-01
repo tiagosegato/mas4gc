@@ -1,12 +1,12 @@
-import conexao
+import connection
 
 # listando apenas nome, data e valor da glicemia de um paciente
 def determinarSituacaoPaciente():
     print('Novo paciente encontrado. Coletando os dados...')
     print('')
     #consultando dados específicos do último paciente cadastrado
-    document = conexao.collection.find({}, {"_id": 0, "nome": 1, "glicemia.valorGlicemia": 1 }).sort("updateDate", -1).limit(1)
-
+    document = connection.collection.find({}, {"_id": 0, "nome": 1, "glicemia.valorGlicemia": 1 }).sort("updateDate", -1).limit(1)
+    
     # nome, quantidade de coletas e as glicemias
     paciente = document[0]["nome"]
     coletas = len(document[0]["glicemia"])
