@@ -13,20 +13,20 @@ Para executar este protótipo de SMA basta seguir os seguintes passos:
 5 - Ignore o pedido de usuário e senha teclando enter para ambas
 
 A figura 1 representa os passos 3, 4 e 5:
-![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/imagens/pro-1.png?raw=true)
+![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/others/imagens/pro-1.png?raw=true)
 Figura 1 - Executando o SMA.
 
 Na sequência a aplicação já entrará em execução.
 
 A figura 2 representa o framework PADE em execução:
-![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/imagens/pro-2.png?raw=true)
+![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/others/imagens/pro-2.png?raw=true)
 Figura 2 - PADE em execução.
 
 A figura 3 apresenta o MAS4GC em funcionamento. O primeiro passo é o agente encontrar um novo Paciente cadastrado. na sequência os dados desse paciente é coletado e exibido na tela. O Agente PAA faz uma análise desses dados, gera um relatório e os envia ao agente PTA, que na sequência retorna o recebimento do relatório ap PAA. Nas três últimas linhas é possível ver a troca de mensagens entre os agentes PAA e PTA.
-![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/imagens/pro-3.png?raw=true)
+![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/others/pro-3.png?raw=true)
 Figura 3 - Funcionamento do MAS4GC.
 
 O diagrama de sequência exibido na figura 4 representa tal troca de mensagem entre os agentes.
-![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/imagens/pro-5.png?raw=true)
+![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/others/pro-5.png?raw=true)
 Figura 4 - Diagrama de Sequência: Troca de mensagens entre os agentes.
 
