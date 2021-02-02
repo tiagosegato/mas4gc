@@ -1,45 +1,27 @@
 
 # Classe do agent PAA (Patient Analyzer Agent)
 
-from pade.misc.utility import display_message, start_loop
 from pade.core.agent import Agent
 from pade.acl.messages import ACLMessage
 from pade.acl.aid import AID
-from agents.behaviours import CompRequest2
-from agents.behaviours import ComportTemporal
+from behaviours import CompRequest2
+from behaviours import ComportTemporal
 
-import agents.connection
+import connection
 import pickle
 
-class PatientAnalyzerAgent(Agent): 
-    def __init__(self, aid, pta_agent_name, dataHora, paciente, glicemia, situacaoPaciente):
-        super(PatientAnalyzerAgent, self).__init__(aid=aid)
 
-        self.dataHora = dataHora
-        self.paciente = paciente
-        self.glicemia = glicemia
-        self.situacaoPaciente = situacaoPaciente
+class PatientAnalyzerAgent(Agent): 
+    def __init__(self, aid, pta_agent_name):
+        super(PatientAnalyzerAgent, self).__init__(aid=aid)
 
         # mensagem que requisita algo ao agente PTA
         message = ACLMessage(ACLMessage.REQUEST) #cria a mensagem por meio da classe ACLMessage
         message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL) #seta o protocolo da msg
         message.add_receiver(AID(name=pta_agent_name)) #adiciona pra quem a mensagem vai
 
-        situacaoPaciente = gerarRelatorioAvaliacao()
-        message.set_content(situacaoPaciente) #seta o conteúdo
-
-        # executa o que está implementado no CompRequest2 a cada 10 segundos
-        self.comport_request = CompRequest2(self, message) #instancia o comportamento de request
-        self.comport_temp = ComportTemporal(self, 10.0, message) #instanciando a classe ComportTemporal
-
-        #adiciona os comportamentos a variável behaviours
-        self.behaviours.append(self.comport_request)
-        self.behaviours.append(self.comport_temp)
-
-
-
-
-    def consultarGlycon(self):
+        ##########
+        #consultarGlycon(self)
         print('Novo paciente encontrado. Coletando os dados...')
         print('')
         #consultando dados específicos do último paciente cadastrado
@@ -56,10 +38,7 @@ class PatientAnalyzerAgent(Agent):
         print('Glicemias coletadas: ', glicemias)
         print('')
 
-
-
-    def gerarRelatorioAvaliacao(self, document, paciente, coletas, glicemias):
-
+        #situacaoPaciente = gerarRelatorioAvaliacao(self)
         if coletas == 1:
         #pega apenas o valor da glicemia coletada
             for x in glicemias[0].values():
@@ -88,8 +67,23 @@ class PatientAnalyzerAgent(Agent):
                 print(x)
 
         #gerando o Relatório de Avaliação para enviar ao PTA
-        self.situacaoPaciente = {'Paciente': paciente, 'Situacao':situacao}
-        print(self.situacaoPaciente)
+        self.situacaoPaciente = {'Paciente': paciente, 'Situacao':situacao, }
+        ##########
 
-        return self.situacaoPaciente
-        
+        message.set_content(self.situacaoPaciente) #seta o conteúdo
+
+        # executa o que está implementado no CompRequest2 a cada 10 segundos
+        self.comport_request = CompRequest2(self, message) #instancia o comportamento de request
+        self.comport_temp = ComportTemporal(self, 3.0, message) #instanciando a classe ComportTemporal
+
+        #adiciona os comportamentos a variável behaviours
+        self.behaviours.append(self.comport_request)
+        self.behaviours.append(self.comport_temp)
+
+
+    # FAZ A CONSULTA DOS PACIENTES E GLICEMIA NO GLYCON
+    #def consultarGlycon(self):
+
+
+    # COM BASE NA GLICEMIA DO PACIENTE VERIFICA QUAL A SUA SITUAÇÃO (HIPO, HIPER, ETC...)
+    #def gerarRelatorioAvaliacao(self, document, paciente, coletas, glicemias):

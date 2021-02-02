@@ -1,8 +1,8 @@
-from pade.misc.utility import display_message, start_loop
+from pade.misc.utility import start_loop
 from sys import argv
 from pade.acl.aid import AID
-from agents.models.PatientAnalyzerAgent import PatientAnalyzerAgent
-from agents.models.ProposeTreatmentAgent import ProposeTreatmentAgent
+from models.paa import PatientAnalyzerAgent
+from models.pta import ProposeTreatmentAgent
 
 #INSTANCIANDO OS AGENTES
 if __name__ == '__main__':
