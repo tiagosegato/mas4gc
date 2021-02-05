@@ -4,6 +4,8 @@ from pade.acl.messages import ACLMessage
 from pade.acl.aid import AID
 from pade.behaviours.protocols import FipaRequestProtocol
 from pade.behaviours.protocols import TimedBehaviour
+from knowledge.bgrules import GlicemicControl
+from knowledge.bgrules import BloodGlucose
 
 ### CLASSES DE COMPORTAMENTOS FIPA ###
 
@@ -28,11 +30,18 @@ class CompRequest(FipaRequestProtocol):
     def handle_request(self, message): 
 
         super(CompRequest, self).handle_request(message)
-        display_message(self.agent.aid.localname, message.content)# conteúdo da msg recebida!!!
-
+        display_message(self.agent.aid.localname, message.content) # conteúdo da msg recebida!!!
+        
         # efetua os cálculos (TRATAMENTO) que tem que efetuar...
         ##############
         
+        situacao = 'hiperG' # preciso pegar da mensage.content...
+
+        engine = GlicemicControl()
+        engine.reset()
+        engine.declare(BloodGlucose(glicemia=situacao))
+        engine.run()
+
         ##############
 
         reply = message.create_reply() # responde a quem solicitou
@@ -47,4 +56,5 @@ class CompRequest2(FipaRequestProtocol):
 
     def handle_inform(self, message):
         display_message(self.agent.aid.localname, message.content)
+        display_message(self.agent.aid.localname, '')
 

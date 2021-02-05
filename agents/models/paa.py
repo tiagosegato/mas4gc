@@ -21,10 +21,8 @@ class PatientAnalyzerAgent(Agent):
         message.add_receiver(AID(name=pta_agent_name)) #adiciona pra quem a mensagem vai
 
         ##########
-        #consultarGlycon(self)
-        print('Novo paciente encontrado. Coletando os dados...')
-        print('')
-        #consultando dados específicos do último paciente cadastrado
+        # consultarGlycon(self)
+        # consultando dados específicos do último paciente cadastrado
         document = connection.collection.find({}, {"_id": 0, "nome": 1, "glicemia.valorGlicemia": 1 }).sort("updateDate", -1).limit(1)
         
         # nome, quantidade de coletas e as glicemias
@@ -33,6 +31,8 @@ class PatientAnalyzerAgent(Agent):
         glicemias = document[0]["glicemia"]
         
         # exibindo os dados coletados
+        print('')
+        print('Paciente encontrado:')
         print('Paciente: ', paciente)
         print('Quantidade de Coletas: ', coletas)
         print('Glicemias coletadas: ', glicemias)
@@ -59,6 +59,7 @@ class PatientAnalyzerAgent(Agent):
                 situacao = 'hyperVS'
             else: print('glicemia inválida!')
 
+
         elif coletas > 1:
             #caso tenha mais de uma glicemia coletada
             for x in document:
@@ -67,7 +68,7 @@ class PatientAnalyzerAgent(Agent):
                 print(x)
 
         #gerando o Relatório de Avaliação para enviar ao PTA
-        self.situacaoPaciente = {'Paciente': paciente, 'Situacao':situacao, }
+        self.situacaoPaciente = {'Paciente': paciente, 'Situacao':situacao }
         ##########
 
         message.set_content(self.situacaoPaciente) #seta o conteúdo
@@ -79,7 +80,6 @@ class PatientAnalyzerAgent(Agent):
         #adiciona os comportamentos a variável behaviours
         self.behaviours.append(self.comport_request)
         self.behaviours.append(self.comport_temp)
-
 
     # FAZ A CONSULTA DOS PACIENTES E GLICEMIA NO GLYCON
     #def consultarGlycon(self):

@@ -13,7 +13,6 @@ class ProposeTreatmentAgent(Agent):
 
         self.comport_request = CompRequest(self)
         self.behaviours.append(self.comport_request)
-    
 
     def calcProxGlicemia(self):
         print(f'Próxima glicemia será de ??? mg/dL')
