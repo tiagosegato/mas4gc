@@ -6,7 +6,7 @@ Para executar este protótipo de SMA basta seguir os seguintes passos:
 
 1 - Instalar (ou ter instalado) o  framework PADE (Python Agent DEvelopment), conforme a documentação: https://pade.readthedocs.io/en/latest/user/instalacao.html#installation-page
 
-2 - Clonar o projeto na sua máquina;
+2 - Clonar o projeto na sua máquina
 
 3 - Utilizando o Terminal/Console/CMD acesse o diretório mas4cg/agents
 
