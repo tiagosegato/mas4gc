@@ -9,7 +9,9 @@ Para executar este protótipo de SMA basta seguir os seguintes passos:
 2 - Clonar o projeto na sua máquina;
 
 3 - Utilizando o Terminal/Console/CMD acesse o diretório mas4cg/agents
+
 4 - Uma vez na pasta agents execute: pade start-runtime --num 1 --port 20000 sma-mas4gc.py
+
 5 - Ignore o pedido de usuário e senha teclando enter para ambas
 
 A figura 1 representa os passos 3, 4 e 5:
