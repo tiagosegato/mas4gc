@@ -55,8 +55,6 @@ def determinarSituacaoPaciente():
 
     return relatorio
 
-
-
 ### TESTES #####
 #determinarSituacaoPaciente()
 
