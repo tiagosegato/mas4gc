@@ -32,11 +32,12 @@ class CompRequest(FipaRequestProtocol):
         super(CompRequest, self).handle_request(message)
         display_message(self.agent.aid.localname, message.content) # conteúdo da msg recebida!!!
         
-        # efetua os cálculos (TRATAMENTO) que tem que efetuar...
+        # INDICA O TRATAMENTO DE ACORDO COM A REGRA
         ##############
         
         situacao = 'hiperG' # preciso pegar da mensage.content...
 
+        # instancia e chama a classe de regras!
         engine = GlicemicControl()
         engine.reset()
         engine.declare(BloodGlucose(glicemia=situacao))

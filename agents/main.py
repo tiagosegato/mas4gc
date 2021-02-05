@@ -11,13 +11,19 @@ if __name__ == '__main__':
     port = int(argv[1])     
         
     #definindo o nome do agente (composto pelo IP e porta). Cada agente executa em uma porta diferente
+
+    # AGENTE PTA
     pta_agent_name = 'agent_pta_{}@localhost:{}'.format(port, port)
     pta_agent = ProposeTreatmentAgent(AID(name=pta_agent_name))
     agents.append(pta_agent)
         
+    # AGENTE PAA
     paa_agent_name = 'agent_paa_{}@localhost:{}'.format(port + 1000, port + 1000)
     paa_agent = PatientAnalyzerAgent(AID(name=paa_agent_name), pta_agent_name)
     agents.append(paa_agent)
+
+    # AGENTE AMA
+    # TODO a ser criado...
 
     start_loop(agents)
 
