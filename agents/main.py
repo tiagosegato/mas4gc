@@ -6,7 +6,6 @@ from models.pta import PTAgent
 
 #INSTANCIANDO OS AGENTES
 if __name__ == '__main__':
-
     agents_per_process = 1
     c = 0
     agents = list()

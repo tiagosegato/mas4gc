@@ -24,6 +24,10 @@ class BloodGlucose(Fact):
 
 class GlicemicControl(KnowledgeEngine):
 
+    @Rule(BloodGlucose(glicemia='semGlicemia'))
+    def bg_sem(self):
+        print("Paciente necessita de coleta!")
+    
     @Rule(BloodGlucose(glicemia='hipoG'))
     def bg_hipoG(self):
         print("Aplicar 4 ampolas de glicose a 50% IV")
@@ -47,4 +51,8 @@ class GlicemicControl(KnowledgeEngine):
     @Rule(BloodGlucose(glicemia='hiperGG'))
     def bg_hiperGG(self):
         print("Aplicar 6 unidade de insulina regular SC")
+
+    @Rule(BloodGlucose(glicemia='gInvalida'))
+    def bg_invalida(self):
+        print("Glicemia Inválida!")
 
