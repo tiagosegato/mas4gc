@@ -1,1 +1,1 @@
-web: python app.py
+web: pade start-runtime --num 1 --port 20000 main.py
