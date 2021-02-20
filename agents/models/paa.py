@@ -7,6 +7,8 @@ from pade.acl.aid import AID
 from pade.behaviours.protocols import FipaRequestProtocol
 import connection
 import pickle
+from bson.objectid import ObjectId
+import pymongo
 
 class CompRequest(FipaRequestProtocol):
     """FIPA Request Behaviour do agente PAA"""
@@ -24,6 +26,7 @@ class CompRequest(FipaRequestProtocol):
         reply = message.create_reply()
         reply.set_performative(ACLMessage.INFORM)
         reply.set_content(situacaoPaciente)
+        
         self.agent.send(reply)
 
 class PAAgent(Agent):
@@ -36,11 +39,12 @@ class PAAgent(Agent):
 
 def consultarGlycon(self):
     # consultando dados específicos do último paciente cadastrado
-    document = connection.collection.find({}, {"_id": 0, "nome": 1, "glicemia.valorGlicemia": 1 }).sort("updateDate", -1).limit(1)
+    document = connection.collection.find({}, sort=[( '_id', pymongo.DESCENDING )])
 
     paciente = document[0]["nome"]
     coletas = len(document[0]["glicemia"])
     glicemias = document[0]["glicemia"]
+    idPaciente = document[0]["_id"]
 
     # exibindo os dados coletados
     print('')
@@ -49,7 +53,7 @@ def consultarGlycon(self):
     print('Quantidade de Coletas: ', coletas)
     print('Glicemias coletadas: ', glicemias)
     print('')
-    
+     
     # TODO SÓ REPETIR SE FOR UMA NOVA COLETA
         
     # verifica se existem glicemias para aquele paciente    
@@ -82,7 +86,10 @@ def consultarGlycon(self):
         print("calcular próxima glicemia, com base nos dados:")
         print('')
         situacao = "a calcular..."
-                
+    
+    # Atualizando situacao do paciente no BD
+    response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": situacao } })
+
     #gerando o Relatório de Avaliação para enviar ao PTA
     #pickle.dumps converte o dict para str
     situacaoPaciente = pickle.dumps({'Paciente': paciente, 'Situacao':situacao})
