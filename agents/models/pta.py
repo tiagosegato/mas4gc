@@ -51,7 +51,7 @@ class PTAgent(Agent):
         message.set_content('novos pacientes?')
 
         self.comport_request = CompRequest(self, message)
-        self.comport_temp = ComportTemporal(self, 10.0, message)
+        self.comport_temp = ComportTemporal(self, 5.0, message)
 
         self.behaviours.append(self.comport_request)
         self.behaviours.append(self.comport_temp)

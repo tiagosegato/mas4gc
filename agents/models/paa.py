@@ -55,38 +55,55 @@ def consultarGlycon(self):
     # verifica se existem glicemias para aquele paciente    
     if coletas == 0:
         situacao = "semGlicemia" 
-
+    
+    #caso tenha apenas uma glicemia coletada
     elif coletas == 1:
-        #pega apenas o valor da glicemia coletada
-            for x in glicemias[0].values():
-                glicemia = int(x)
+        #pega o valor da única glicemia coletada
+        for x in glicemias[0].values():
+            glicemia = int(x)
 
-            # mostra a situação de acordo com a tabela
-            if glicemia >= 0 and glicemia <= 49:
-                situacao = 'hipoG'
-            elif glicemia >=50 and glicemia <= 99:
-                situacao = 'hipoL'
-            elif glicemia >=100 and glicemia <= 200:
-                situacao = 'gAlvo'
-            elif glicemia >=201 and glicemia <= 250:
-                situacao = 'hiperL'
-            elif glicemia >=251 and glicemia <= 300:
-                situacao = 'hiperG'
-            elif glicemia >=301:
-                situacao = 'hiperGG'
-            else: situacao = 'gInvalida'
-
+         # compara com a tabela da escala glicêmica
+        if glicemia >= 0 and glicemia <= 49:
+            situacao = 'hipoG'
+        elif glicemia >=50 and glicemia <= 99:
+            situacao = 'hipoL'
+        elif glicemia >=100 and glicemia <= 200:
+            situacao = 'gAlvo'
+        elif glicemia >=201 and glicemia <= 250:
+            situacao = 'hiperL'
+        elif glicemia >=251 and glicemia <= 300:
+            situacao = 'hiperG'
+        elif glicemia >=301:
+            situacao = 'hiperGG'
+        else: situacao = 'gInvalida'    
+    
+    #caso tenha mais de uma glicemia coletada
     elif coletas > 1:
-        #caso tenha mais de uma glicemia coletada
+        #pega o valor da última glicemia coletada
+        for x in glicemias[-1].values():
+            glicemia = int(x)
+
+        # compara com a tabela da escala glicêmica
+        if glicemia >= 0 and glicemia <= 49:
+            situacao = 'hipoG'
+        elif glicemia >=50 and glicemia <= 99:
+            situacao = 'hipoL'
+        elif glicemia >=100 and glicemia <= 200:
+            situacao = 'gAlvo'
+        elif glicemia >=201 and glicemia <= 250:
+            situacao = 'hiperL'
+        elif glicemia >=251 and glicemia <= 300:
+            situacao = 'hiperG'
+        elif glicemia >=301:
+            situacao = 'hiperGG'
+        else: situacao = 'gInvalida'
+
         # TODO calcular as probabilidades de hipo e hiper futuras
-        print("calcular próxima glicemia, com base nos dados:")
+        print("calcular a probabilidade da próxima glicemia...")
         print('')
-        situacao = "a calcular..."
                 
     #gerando o Relatório de Avaliação para enviar ao PTA
     #pickle.dumps converte o dict para str
     situacaoPaciente = pickle.dumps({'Paciente': paciente, 'Situacao':situacao})
 
     return situacaoPaciente
-
-   
