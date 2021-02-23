@@ -8,6 +8,9 @@ from pade.behaviours.protocols import TimedBehaviour
 from knowledge.bgrules import GlicemicControl
 from knowledge.bgrules import BloodGlucose
 import pickle
+from bson.objectid import ObjectId
+import pymongo
+import connection
 
 
 class CompRequest(FipaRequestProtocol):
@@ -25,8 +28,13 @@ class CompRequest(FipaRequestProtocol):
         engine = GlicemicControl()
         engine.reset()
         situacao = situacaoPaciente_dict['Situacao']
-        engine.declare(BloodGlucose(glicemia=situacao))
+        #idPaciente = situacaoPaciente_dict['ID']
+        idPaciente = '1233'
+        engine.declare(BloodGlucose(glicemia=situacao, idPaciente=idPaciente))
         engine.run()
+
+
+        #response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
 
 
 class ComportTemporal(TimedBehaviour):
@@ -51,7 +59,7 @@ class PTAgent(Agent):
         message.set_content('novos pacientes?')
 
         self.comport_request = CompRequest(self, message)
-        self.comport_temp = ComportTemporal(self, 5.0, message)
+        self.comport_temp = ComportTemporal(self, 2.0, message)
 
         self.behaviours.append(self.comport_request)
         self.behaviours.append(self.comport_temp)

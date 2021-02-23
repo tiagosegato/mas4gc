@@ -1,8 +1,12 @@
 from experta import *
+from bson.objectid import ObjectId
+import pymongo
+import connection
+
 
 class BloodGlucose(Fact):
+
     """ Informações sobre controle glicêmico"""
-    
     ### ESCALA DE VALORES GLICÊMICOS (Medidadas isoladas - apenas glicemia)
     '''
      CÓDIGO |      EPISÓDIO            |   VALORES    |    COLETA     |          TRATAMENTO  
@@ -14,45 +18,64 @@ class BloodGlucose(Fact):
     hiperGG | Hiperglicemia Gravíssima | acima de 301 | 24 a 48 x dia | 6 unidade de insulina regular SC
     
     Aplicar Insulina Contínua - hipoG
-
     Cumulativo - media móvel das ultimas 48 horas
-
     Associativo - com outras comorbidades
-    
-    '''
+    ''' 
     pass
+ 
 
 class GlicemicControl(KnowledgeEngine):
 
+    #usar o gAlvo para testes
+    @Rule(AND(BloodGlucose(glicemia='gAlvo'), NOT(BloodGlucose(idPaciente='0'))))
+    def bg_gAlvo(self):
+        recomendacao = "Manter observação"
+        print(recomendacao)
+
     @Rule(BloodGlucose(glicemia='semGlicemia'))
     def bg_sem(self):
-        print("Paciente necessita de coleta!")
-    
+        recomendacao = "Paciente necessita de coleta!"
+        print(recomendacao)
+   
     @Rule(BloodGlucose(glicemia='hipoG'))
     def bg_hipoG(self):
-        print("Aplicar 4 ampolas de glicose a 50% IV")
+        recomendacao = "Aplicar 4 ampolas de glicose a 50% IV"
+        print(recomendacao)
 
     @Rule(BloodGlucose(glicemia='hipoL'))
     def bg_hipoL(self):
-        print("Aplicar 2 ampolas de glicose a 50% IV")
-
+        recomendacao = "Aplicar 2 ampolas de glicose a 50% IV"
+        print(recomendacao)
+       
+    '''
     @Rule(BloodGlucose(glicemia='gAlvo'))
     def bg_gAlvo(self):
-        print("Manter observação")
+        recomendacao = "Manter observação"
+        print(recomendacao)
+    '''
 
     @Rule(BloodGlucose(glicemia='hiperL'))
     def bg_hiperL(self):
-        print("Aplicar 2 unidade de insulina regular SC")
+        recomendacao = "Aplicar 2 unidade de insulina regular SC"
+        print(recomendacao)
 
     @Rule(BloodGlucose(glicemia='hiperG'))
     def bg_hiperG(self):
-        print("Aplicar 4 unidade de insulina regular SC")
+        recomendacao = "Aplicar 4 unidade de insulina regular SC"
+        print(recomendacao)
 
     @Rule(BloodGlucose(glicemia='hiperGG'))
     def bg_hiperGG(self):
-        print("Aplicar 6 unidade de insulina regular SC")
+        recomendacao = "Aplicar 6 unidade de insulina regular SC"
+        print(recomendacao)
 
     @Rule(BloodGlucose(glicemia='gInvalida'))
     def bg_invalida(self):
-        print("Glicemia Inválida!")
+        recomendacao = "Glicemia Inválida!"
+        print(recomendacao)
 
+    
+# Atualizando situacao do paciente no BD
+#def fazerRecomendacao(idPaciente, recomendacao):    
+    #response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
+    #print(recomendacao)

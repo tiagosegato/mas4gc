@@ -8,6 +8,7 @@ from pade.behaviours.protocols import FipaRequestProtocol
 import connection
 import pickle
 
+
 class CompRequest(FipaRequestProtocol):
     """FIPA Request Behaviour do agente PAA"""
     def __init__(self, agent):
@@ -36,11 +37,13 @@ class PAAgent(Agent):
 
 def consultarGlycon(self):
     # consultando dados específicos do último paciente cadastrado
-    document = connection.collection.find({}, {"_id": 0, "nome": 1, "glicemia.valorGlicemia": 1 }).sort("updateDate", -1).limit(1)
-
+    document = connection.collection.find({}, {"_id": 1, "nome": 1, "glicemia.valorGlicemia": 1 }).sort("updateDate", -1).limit(1)
+    #document = connection.collection.find({}, sort=[( '_id', pymongo.DESCENDING )])
+    
     paciente = document[0]["nome"]
     coletas = len(document[0]["glicemia"])
     glicemias = document[0]["glicemia"]
+    idPaciente = document[0]["_id"]
 
     # exibindo os dados coletados
     print('')
@@ -100,10 +103,10 @@ def consultarGlycon(self):
 
         # TODO calcular as probabilidades de hipo e hiper futuras
         print("calcular a probabilidade da próxima glicemia...")
-        print('')
+        print('')   
                 
     #gerando o Relatório de Avaliação para enviar ao PTA
     #pickle.dumps converte o dict para str
-    situacaoPaciente = pickle.dumps({'Paciente': paciente, 'Situacao':situacao})
+    situacaoPaciente = pickle.dumps({'ID':idPaciente, 'Paciente': paciente, 'Situacao':situacao})
 
     return situacaoPaciente
