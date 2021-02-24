@@ -51,6 +51,7 @@ def consultarGlycon(self):
     print('Paciente: ', paciente)
     print('Quantidade de Coletas: ', coletas)
     print('Glicemias coletadas: ', glicemias)
+    print('Id do Paciente: ', idPaciente)
     print('')
     
     # TODO SÓ REPETIR SE FOR UMA NOVA COLETA
@@ -102,11 +103,11 @@ def consultarGlycon(self):
         else: situacao = 'gInvalida'
 
         # TODO calcular as probabilidades de hipo e hiper futuras
-        print("calcular a probabilidade da próxima glicemia...")
-        print('')   
+        #print("calcular a probabilidade da próxima glicemia...")
+        #print('')   
                 
     #gerando o Relatório de Avaliação para enviar ao PTA
     #pickle.dumps converte o dict para str
-    situacaoPaciente = pickle.dumps({'ID':idPaciente, 'Paciente': paciente, 'Situacao':situacao})
+    situacaoPaciente = pickle.dumps({'ID':idPaciente, 'Paciente': paciente, 'Situacao':situacao}) 
 
     return situacaoPaciente

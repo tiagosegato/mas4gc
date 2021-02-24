@@ -21,6 +21,8 @@ class BloodGlucose(Fact):
     Cumulativo - media móvel das ultimas 48 horas
     Associativo - com outras comorbidades
     ''' 
+
+
     pass
  
 
@@ -30,23 +32,32 @@ class GlicemicControl(KnowledgeEngine):
     @Rule(AND(BloodGlucose(glicemia='gAlvo'), NOT(BloodGlucose(idPaciente='0'))))
     def bg_gAlvo(self):
         recomendacao = "Manter observação"
+        
+        bg = BloodGlucose()
+        valores = bg.items.idPaciente
+    
+        print('Valores:', valores)
         print(recomendacao)
+        print('')
 
     @Rule(BloodGlucose(glicemia='semGlicemia'))
     def bg_sem(self):
         recomendacao = "Paciente necessita de coleta!"
         print(recomendacao)
-   
+        print('')
+
     @Rule(BloodGlucose(glicemia='hipoG'))
     def bg_hipoG(self):
         recomendacao = "Aplicar 4 ampolas de glicose a 50% IV"
         print(recomendacao)
+        print('')
 
     @Rule(BloodGlucose(glicemia='hipoL'))
     def bg_hipoL(self):
         recomendacao = "Aplicar 2 ampolas de glicose a 50% IV"
         print(recomendacao)
-       
+        print('')
+
     '''
     @Rule(BloodGlucose(glicemia='gAlvo'))
     def bg_gAlvo(self):
@@ -58,21 +69,25 @@ class GlicemicControl(KnowledgeEngine):
     def bg_hiperL(self):
         recomendacao = "Aplicar 2 unidade de insulina regular SC"
         print(recomendacao)
+        print('')
 
     @Rule(BloodGlucose(glicemia='hiperG'))
     def bg_hiperG(self):
         recomendacao = "Aplicar 4 unidade de insulina regular SC"
         print(recomendacao)
+        print('')
 
     @Rule(BloodGlucose(glicemia='hiperGG'))
     def bg_hiperGG(self):
         recomendacao = "Aplicar 6 unidade de insulina regular SC"
         print(recomendacao)
+        print('')
 
     @Rule(BloodGlucose(glicemia='gInvalida'))
     def bg_invalida(self):
         recomendacao = "Glicemia Inválida!"
         print(recomendacao)
+        print('')
 
     
 # Atualizando situacao do paciente no BD
