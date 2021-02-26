@@ -28,69 +28,60 @@ class BloodGlucose(Fact):
 
 class GlicemicControl(KnowledgeEngine):
 
-    #usar o gAlvo para testes
-    @Rule(AND(BloodGlucose(glicemia='gAlvo'), NOT(BloodGlucose(idPaciente='0'))))
-    def bg_gAlvo(self):
-        recomendacao = "Manter observação"
-        
-        bg = BloodGlucose()
-        valores = bg.items.idPaciente
-    
-        print('Valores:', valores)
-        print(recomendacao)
-        print('')
-
-    @Rule(BloodGlucose(glicemia='semGlicemia'))
-    def bg_sem(self):
+    @Rule(AND(BloodGlucose(glicemia='semGlicemia'), BloodGlucose(idPaciente=MATCH.idPaciente)))
+    def bg_sem(self, idPaciente):
         recomendacao = "Paciente necessita de coleta!"
         print(recomendacao)
-        print('')
+        # gravando no BD do Glycon
+        response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
 
-    @Rule(BloodGlucose(glicemia='hipoG'))
-    def bg_hipoG(self):
+    @Rule(AND(BloodGlucose(glicemia='hipoG'), BloodGlucose(idPaciente=MATCH.idPaciente)))
+    def bg_hipoG(self, idPaciente):
         recomendacao = "Aplicar 4 ampolas de glicose a 50% IV"
         print(recomendacao)
-        print('')
+        # gravando no BD do Glycon
+        response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
 
-    @Rule(BloodGlucose(glicemia='hipoL'))
-    def bg_hipoL(self):
+    @Rule(AND(BloodGlucose(glicemia='hipoL'), BloodGlucose(idPaciente=MATCH.idPaciente)))
+    def bg_hipoL(self, idPaciente):
         recomendacao = "Aplicar 2 ampolas de glicose a 50% IV"
         print(recomendacao)
-        print('')
+        # gravando no BD do Glycon
+        response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
 
-    '''
-    @Rule(BloodGlucose(glicemia='gAlvo'))
-    def bg_gAlvo(self):
+    @Rule(AND(BloodGlucose(glicemia='gAlvo'), BloodGlucose(idPaciente=MATCH.idPaciente)))
+    def bg_gAlvo(self, idPaciente):
         recomendacao = "Manter observação"
         print(recomendacao)
-    '''
+        # gravando no BD do Glycon
+        response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
 
-    @Rule(BloodGlucose(glicemia='hiperL'))
-    def bg_hiperL(self):
+    @Rule(AND(BloodGlucose(glicemia='hiperL'), BloodGlucose(idPaciente=MATCH.idPaciente)))
+    def bg_hiperL(self, idPaciente):
         recomendacao = "Aplicar 2 unidade de insulina regular SC"
         print(recomendacao)
-        print('')
+        # gravando no BD do Glycon
+        response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
 
-    @Rule(BloodGlucose(glicemia='hiperG'))
-    def bg_hiperG(self):
+    @Rule(AND(BloodGlucose(glicemia='hiperG'), BloodGlucose(idPaciente=MATCH.idPaciente)))
+    def bg_hiperG(self, idPaciente):
         recomendacao = "Aplicar 4 unidade de insulina regular SC"
         print(recomendacao)
-        print('')
+        # gravando no BD do Glycon
+        response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
 
-    @Rule(BloodGlucose(glicemia='hiperGG'))
-    def bg_hiperGG(self):
+    @Rule(AND(BloodGlucose(glicemia='hiperGG'), BloodGlucose(idPaciente=MATCH.idPaciente)))
+    def bg_hiperGG(self, idPaciente):
         recomendacao = "Aplicar 6 unidade de insulina regular SC"
         print(recomendacao)
-        print('')
+        # gravando no BD do Glycon
+        response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
 
-    @Rule(BloodGlucose(glicemia='gInvalida'))
-    def bg_invalida(self):
+    @Rule(AND(BloodGlucose(glicemia='gInvalida'), BloodGlucose(idPaciente=MATCH.idPaciente)))
+    def bg_invalida(self, idPaciente):
         recomendacao = "Glicemia Inválida!"
         print(recomendacao)
-        print('')
+        # gravando no BD do Glycon
+        response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
 
-    
-# Atualizando situacao do paciente no BD
-#def fazerRecomendacao(idPaciente, recomendacao):    
-    #response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
-    #print(recomendacao)
+
