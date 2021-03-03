@@ -28,7 +28,9 @@ class CompRequest(FipaRequestProtocol):
         engine = GlicemicControl()
         engine.reset()
         situacao = situacaoPaciente_dict['Situacao']
+        print(situacao)
         idPaciente = situacaoPaciente_dict['ID']
+        print(idPaciente)
         engine.declare(BloodGlucose(glicemia=situacao,  idPaciente=idPaciente))
         engine.run()
 
@@ -55,7 +57,7 @@ class PTAgent(Agent):
         message.set_content('novos pacientes?')
 
         self.comport_request = CompRequest(self, message)
-        self.comport_temp = ComportTemporal(self, 2.0, message)
+        self.comport_temp = ComportTemporal(self, 4.0, message)
 
         self.behaviours.append(self.comport_request)
         self.behaviours.append(self.comport_temp)

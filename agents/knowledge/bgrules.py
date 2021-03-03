@@ -21,8 +21,6 @@ class BloodGlucose(Fact):
     Cumulativo - media móvel das ultimas 48 horas
     Associativo - com outras comorbidades
     ''' 
-
-
     pass
  
 

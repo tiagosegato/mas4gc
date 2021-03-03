@@ -41,22 +41,31 @@ class PAAgent(Agent):
 # GERA E RELATÓRIO DE AVALIAÇÃO DO PACIENTE - GERANDO A SITUAÇÃO DO PACIENTE
 def relatorioAvaliacao(self):
     # consultando dados específicos do último paciente cadastrado
-    document = connection.collection.find({}, {"_id": 1, "nome": 1, "glicemia.valorGlicemia": 1, "glicemia.dataHoraColeta": 1 }).sort("updateDate", -1).limit(1)
+    #document = connection.collection.find({}, {"_id": 1, "nome": 1, "glicemia.valorGlicemia": 1, "glicemia.dataHoraColeta": 1 }).sort("updateDate", -1).limit(1)
 
+    document = connection.collection.find({},{ "_id": 1, "updateDate": 1, "nome": 1, 
+    "glicemia.valorGlicemia": 1, "glicemia.dataHoraColeta": 1 }).sort("updateDate", -1)
+    
     # dados recuperados na consulta acima
     paciente = document[0]["nome"]
     coletas = len(document[0]["glicemia"])
     glicemias = document[0]["glicemia"]
     idPaciente = document[0]["_id"]
-    horariosColeta = [h['dataHoraColeta'] for h in glicemias] # pegando os horários das coletas
-    
+    data = document[0]["updateDate"]
+    # pegando o valor dos horários das coletas
+
+    horario = document[0]["glicemia"]
+    horariosColeta = [h['dataHoraColeta'] for h in horario] # pegando os horários das coletas
+
+    for x in document:
+        print(x) 
 
     # exibindo os dados coletados
     print('')
     print('Paciente: ', paciente)
     print('Quantidade de coletas: ', coletas)
-    #print('Glicemias coletadas: ', glicemias)
-    #print('Horários coletas: ', horariosColeta)  
+    print("UpdateDate: ", data)
+
 
     # verifica se existem glicemias para aquele paciente    
     if coletas == 0:
@@ -65,8 +74,11 @@ def relatorioAvaliacao(self):
     # caso tenha apenas uma glicemia coletada
     elif coletas == 1:
         #pega o valor da única glicemia coletada
-        for x in glicemias[0].values():
-            glicemia = int(x)
+
+        glicemia = int(glicemias[0]['valorGlicemia'])
+        
+        print(glicemia)
+        print(type(glicemia))
 
         # compara com a tabela da escala glicêmica
         if glicemia >= 0 and glicemia <= 49:
@@ -113,7 +125,7 @@ def relatorioAvaliacao(self):
         y_mod = a * x + b # gerando os pontos do modelo
 
         glicemia = a * (horaUltimaColeta + 240) + b # gerando a prox. glicemia para as próximas 4h
-        print('') 
+        print('glicemia: ', glicemia) 
         print(f"A próxima glicemia (4h) será de: {glicemia:6.2f}")
         print('') 
 
