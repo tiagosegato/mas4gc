@@ -29,42 +29,42 @@ class GlicemicControl(KnowledgeEngine):
     # GLICEMIAS DE ACORDO COM SITUAÇÃO ATUAL
     @Rule(AND(BloodGlucose(glicemia='hipoG'), BloodGlucose(idPaciente=MATCH.idPaciente)))
     def bg_hipoG(self, idPaciente):
-        recomendacao = "Aplicar 4 ampolas de glicose a 50% IV"
+        recomendacao = "Glicose: 4 AMP - 50% IV"
         print(recomendacao)
         print('') 
         response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
 
     @Rule(AND(BloodGlucose(glicemia='hipoL'), BloodGlucose(idPaciente=MATCH.idPaciente)))
     def bg_hipoL(self, idPaciente):
-        recomendacao = "Aplicar 2 ampolas de glicose a 50% IV"
+        recomendacao = "Glicose: 2 AMP - 50% IV"
         print(recomendacao)
         print('') 
         response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
 
     @Rule(AND(BloodGlucose(glicemia='gAlvo'), BloodGlucose(idPaciente=MATCH.idPaciente)))
     def bg_gAlvo(self, idPaciente):
-        recomendacao = "Manter observação"
+        recomendacao = "Manter Observação"
         print(recomendacao)
         print('') 
         response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
 
     @Rule(AND(BloodGlucose(glicemia='hiperL'), BloodGlucose(idPaciente=MATCH.idPaciente)))
     def bg_hiperL(self, idPaciente):
-        recomendacao = "Aplicar 2 unidade de insulina regular SC"
+        recomendacao = "Insulina Regular: 2 UN - SC"
         print(recomendacao)
         print('') 
         response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
 
     @Rule(AND(BloodGlucose(glicemia='hiperG'), BloodGlucose(idPaciente=MATCH.idPaciente)))
     def bg_hiperG(self, idPaciente):
-        recomendacao = "Aplicar 4 unidade de insulina regular SC"
+        recomendacao = "Insulina Regular: 4 UN - SC"
         print(recomendacao)
         print('') 
         response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
 
     @Rule(AND(BloodGlucose(glicemia='hiperGG'), BloodGlucose(idPaciente=MATCH.idPaciente)))
     def bg_hiperGG(self, idPaciente):
-        recomendacao = "Aplicar 6 unidade de insulina regular SC"
+        recomendacao = "Insulina Regular: 6 UN - SC"
         print(recomendacao)
         print('') 
         response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } })  
@@ -73,42 +73,42 @@ class GlicemicControl(KnowledgeEngine):
     # GLICEMIAS DE ACORDO COM PREVISÃO
     @Rule(AND(BloodGlucose(glicemia='prevHipoG'), BloodGlucose(idPaciente=MATCH.idPaciente)))
     def bg_prevHipoG(self, idPaciente):
-        recomendacao = "Aplicar 4 ampolas de glicose a 50% IV"
+        recomendacao = "Glicose: 4 AMP - 50% IV (Prev. 4h)"
         print(recomendacao)
         print('') 
         response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
 
     @Rule(AND(BloodGlucose(glicemia='prevHipoL'), BloodGlucose(idPaciente=MATCH.idPaciente)))
     def bg_prevHipoL(self, idPaciente):
-        recomendacao = "Aplicar 2 ampolas de glicose a 50% IV"
+        recomendacao = "Glicose: 2 AMP - 50% IV (Prev. 4h)"
         print(recomendacao)
         print('') 
         response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
 
     @Rule(AND(BloodGlucose(glicemia='prevgAlvo'), BloodGlucose(idPaciente=MATCH.idPaciente)))
     def bg_prevgAlvo(self, idPaciente):
-        recomendacao = "Manter observação"
+        recomendacao = "Manter Observação (Prev. 4h)"
         print(recomendacao)
         print('') 
         response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
 
     @Rule(AND(BloodGlucose(glicemia='prevHiperL'), BloodGlucose(idPaciente=MATCH.idPaciente)))
     def bg_prevHiperL(self, idPaciente):
-        recomendacao = "Aplicar 2 unidade de insulina regular SC"
+        recomendacao = "Insulina Regular: 2 UN - SC (Prev. 4h)"
         print(recomendacao)
         print('') 
         response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
 
     @Rule(AND(BloodGlucose(glicemia='prevHiperG'), BloodGlucose(idPaciente=MATCH.idPaciente)))
     def bg_prevHiperG(self, idPaciente):
-        recomendacao = "Aplicar 4 unidade de insulina regular SC"
+        recomendacao = "Insulina Regular: 4 UN - SC (Prev. 4h)"
         print(recomendacao)
         print('') 
         response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
 
     @Rule(AND(BloodGlucose(glicemia='prevHiperGG'), BloodGlucose(idPaciente=MATCH.idPaciente)))
     def bg_prevHiperGG(self, idPaciente):
-        recomendacao = "Aplicar 6 unidade de insulina regular SC"
+        recomendacao = "Insulina Regular: 6 UN - SC (Prev. 4h)"
         print(recomendacao)
         print('') 
         response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } })  
@@ -116,7 +116,7 @@ class GlicemicControl(KnowledgeEngine):
 # GLICEMIAS COM SITUAÇÕES INCOMUNS
     @Rule(AND(BloodGlucose(glicemia='semGlicemia'), BloodGlucose(idPaciente=MATCH.idPaciente)))
     def bg_sem(self, idPaciente):
-        recomendacao = "Paciente necessita de coleta!"
+        recomendacao = "Coleta de Necessária"
         print(recomendacao)
         print('') 
         response = connection.collection.update_one({ "_id": ObjectId(idPaciente) }, { "$set": { "recomendacao": recomendacao } }) 
