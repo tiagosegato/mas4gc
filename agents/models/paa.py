@@ -6,10 +6,11 @@ from pade.acl.messages import ACLMessage
 from pade.acl.aid import AID
 from pade.behaviours.protocols import FipaRequestProtocol
 import connection
+from datetime import datetime
 import pickle
 import numpy as np
 from scipy import stats
-from datetime import datetime
+from sklearn.linear_model import LinearRegression
 
 
 class CompRequest(FipaRequestProtocol):
@@ -42,16 +43,25 @@ class PAAgent(Agent):
 def relatorioAvaliacao(self):
     # consultando dados específicos do último paciente cadastrado
     document = connection.collection.find({},{"_id": 1, "nome": 1, 
-    "glicemia.valorGlicemia": 1, "glicemia.dataHoraColeta": 1 }).sort("updateDate", -1).limit(1)
+    "glicemia.valorGlicemia": 1, "glicemia.dataHoraColeta": 1, "glicemia.ultimaAlimentacao": 1}).sort("updateDate", -1).limit(1)
     
     # dados recuperados na consulta acima
     idPaciente = document[0]["_id"]
     paciente = document[0]["nome"]
     coletas = len(document[0]["glicemia"])
+    
     glicemias = document[0]["glicemia"]
     valoresGlicemia = [int(g['valorGlicemia']) for g in glicemias] # pegando os valores das glicemias 
+    
     horario = document[0]["glicemia"]
     horariosColeta = [h['dataHoraColeta'] for h in horario] # pegando os horários das coletas
+    horaColeta=[]
+    for h in horariosColeta:
+        hc = datetime.strptime(h, "%Y-%m-%d %H:%M")
+        horaColeta.append(int(hc.strftime('%H')))
+    
+    alimentacao = document[0]["glicemia"]
+    ultimaAlimentacao = [int(a['ultimaAlimentacao']) for a in horario] # pegando as ultimas alimentações
 
     # exibindo os dados coletados
     print('')
@@ -59,6 +69,7 @@ def relatorioAvaliacao(self):
     print('Quantidade de coletas: ', coletas)
     print('Glicemias: ', valoresGlicemia)
     print('Coletas: ', horariosColeta)
+    
 
     # verifica se existem glicemias para aquele paciente    
     if coletas == 0:
@@ -90,19 +101,43 @@ def relatorioAvaliacao(self):
         temposColeta = []
         for x in horariosColeta:
             # diferença entre as horas...
-            diferenca = (datetime.strptime(x, '%Y-%m-%d %H:%M') - datetime.strptime(horariosColeta[0], '%Y-%m-%d %H:%M')).total_seconds() / 60
-
+            diferenca = (datetime.strptime(x, '%Y-%m-%d %H:%M')
+                       - datetime.strptime(horariosColeta[0], '%Y-%m-%d %H:%M')).total_seconds() / 3600 #convertendo em horas
+            
             horaUltimaColeta = diferenca # pega apenas a última coleta
-            temposColeta.append(diferenca) # adiciona os horários das coletas no array
-
+            temposColeta.append(int(diferenca)) # adiciona os horários das coletas no array
+            
         print('Glicemias coletadas: ', valoresGlicemia)
-        print('Horários das coletas: ', temposColeta)
+        print('Tempo das coletas: ', temposColeta)
+        print('Hora Coleta: ', horaColeta)
+        print('Última alimentação: ', ultimaAlimentacao)
         print('') 
 
         # CALCULANDO A PROBABILIDADE DA PRÓXIMA GLICEMIA
+        #carregando os dados
+        y = valoresGlicemia #glicemias (mg/dL)
+        x1 = temposColeta #tempo em horas (ex:6h em 6h)
+        x2 = horaColeta #hora do dia (manhã, tarde, noite...)
+        x3 = ultimaAlimentacao #última alimentação em horas
+
+        x = np.column_stack((x1, x2, x3)) #agrupa as variaveis preditoras
+
+        reg = LinearRegression().fit(x, y) #efetua a regressão
+
+        #apresentando os dados
+        print(reg.score(x, y))
+        print(reg.coef_)
+        print(reg.intercept_)
+
+        glicemia = reg.predict(np.array([[48, 0, 6]])) #tempo, hora, alimentação
+        print('A previsão é de: ', glicemia)
+
+        #### REGRESSÃO LINEAR SIMPLES####
         # adicionando os valores dos horários e valores das coletas nos arrays
-        x = np.array(temposColeta)
+        '''
         y = np.array(valoresGlicemia)
+        x = np.array(temposColeta)
+       
 
         # fazendo o ajuste do modelo (Regressão Linear)
         a, b, r, p_value, std_err = stats.linregress(x, y)
@@ -111,6 +146,7 @@ def relatorioAvaliacao(self):
         glicemia = a * (horaUltimaColeta + 240) + b # gerando a prox. glicemia para as próximas 4h
         print(f"A próxima glicemia (4h) será de: {glicemia:4.0f}")
         print('') 
+        '''
 
         # compara com a tabela da escala glicêmica
         if glicemia >= 0 and glicemia <= 49:
