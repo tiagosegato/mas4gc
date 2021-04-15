@@ -42,34 +42,71 @@ class PAAgent(Agent):
 # GERA E RELATÓRIO DE AVALIAÇÃO DO PACIENTE - GERANDO A SITUAÇÃO DO PACIENTE
 def relatorioAvaliacao(self):
     # consultando dados específicos do último paciente cadastrado
-    document = connection.collection.find({},{"_id": 1, "nome": 1, 
+    document = connection.collection.find({},{"_id": 1, "nome": 1, "sexo": 1, "imc": 1, "diabetes": 1, 
     "glicemia.valorGlicemia": 1, "glicemia.dataHoraColeta": 1, "glicemia.ultimaAlimentacao": 1}).sort("updateDate", -1).limit(1)
     
     # dados recuperados na consulta acima
     idPaciente = document[0]["_id"]
     paciente = document[0]["nome"]
+    sexo = document[0]["sexo"]
+    sexoBin = lambda sexo : int(1) if sexo == "Masculino" else int(0)
+    sexo = sexoBin(sexo)
+    imc = round(document[0]["imc"])
+    diabetes = document[0]["diabetes"]
+    diabetesBin = lambda diabetes : int(0) if diabetes == "Não tem" else (int(1) if diabetes == "Ignorado" else int(2))
+    diabetes = diabetesBin(diabetes)
+
     coletas = len(document[0]["glicemia"])
-    
+
     glicemias = document[0]["glicemia"]
     valoresGlicemia = [int(g['valorGlicemia']) for g in glicemias] # pegando os valores das glicemias 
-    
+
+
+    if (coletas >0):
+        ultimas = valoresGlicemia
+        ultimaGlicemia = ultimas[:-1]
+        ultimaGlicemia.insert(0,99)
+        #ultimaGlicemia = int(valoresGlicemia[coletas-2]) #pega apenas o
+    else: ultimaGlicemia = 'Não coletada!'
+
     horario = document[0]["glicemia"]
     horariosColeta = [h['dataHoraColeta'] for h in horario] # pegando os horários das coletas
     horaColeta=[]
     for h in horariosColeta:
         hc = datetime.strptime(h, "%Y-%m-%d %H:%M")
         horaColeta.append(int(hc.strftime('%H')))
+
+    # convertendo os horários em minutos
+    temposColeta = []
+    for x in horariosColeta:
+        # diferença entre as horas...
+        diferenca = (datetime.strptime(x, '%Y-%m-%d %H:%M')
+                    - datetime.strptime(horariosColeta[0], '%Y-%m-%d %H:%M')).total_seconds() / 3600 #convertendo em horas
+            
+        horaUltimaColeta = diferenca # pega apenas a última coleta
+        temposColeta.append(int(diferenca)) # adiciona os horários das coletas no array
     
     alimentacao = document[0]["glicemia"]
     ultimaAlimentacao = [int(a['ultimaAlimentacao']) for a in horario] # pegando as ultimas alimentações
 
     # exibindo os dados coletados
     print('')
-    print('Paciente: ', paciente)
-    print('Quantidade de coletas: ', coletas)
+    print('DADOS PACIENTE')
+    print('ID Paciente: ', idPaciente)
+    print('Nome: ', paciente)
+    print('Sexo: ', sexo)
+    print('IMC: ', imc)
+    print('Diabetes: ', diabetes)
+    print('')
+    print('DADOS COLETAS GLICEMIAS')
+    print(coletas, 'Coleta(s)')
+    print('Última alimentação: ', ultimaAlimentacao)
+    print('Tempo das coletas: ', temposColeta)
+    print('Hora Coleta: ', horaColeta)
     print('Glicemias: ', valoresGlicemia)
-    print('Coletas: ', horariosColeta)
-    
+    print('Última Glicemia: ', ultimaGlicemia)
+    #print('Coletas: ', horariosColeta)
+    print('')
 
     # verifica se existem glicemias para aquele paciente    
     if coletas == 0:
@@ -97,30 +134,21 @@ def relatorioAvaliacao(self):
 
     #caso tenha mais de uma glicemia coletada
     elif coletas > 1:
-        # convertendo os horários em minutos
-        temposColeta = []
-        for x in horariosColeta:
-            # diferença entre as horas...
-            diferenca = (datetime.strptime(x, '%Y-%m-%d %H:%M')
-                       - datetime.strptime(horariosColeta[0], '%Y-%m-%d %H:%M')).total_seconds() / 3600 #convertendo em horas
-            
-            horaUltimaColeta = diferenca # pega apenas a última coleta
-            temposColeta.append(int(diferenca)) # adiciona os horários das coletas no array
-            
-        print('Glicemias coletadas: ', valoresGlicemia)
-        print('Tempo das coletas: ', temposColeta)
-        print('Hora Coleta: ', horaColeta)
-        print('Última alimentação: ', ultimaAlimentacao)
-        print('') 
-
+        
         # CALCULANDO A PROBABILIDADE DA PRÓXIMA GLICEMIA
+        '''
         #carregando os dados
         y = valoresGlicemia #glicemias (mg/dL)
-        x1 = temposColeta #tempo em horas (ex:6h em 6h)
-        x2 = horaColeta #hora do dia (manhã, tarde, noite...)
-        x3 = ultimaAlimentacao #última alimentação em horas
+        #x1 = idPaciente
+        x2 = sexo #0-feminino/1-masculino
+        x3 = imc
+        x4 = diabetes #0-não tem/1-ignorado/2-tem diabetes
+        x5 = temposColeta #tempo em horas (ex:6h em 6h)
+        x6 = horaColeta #hora do dia (manhã, tarde, noite...)
+        x7 = ultimaAlimentacao #última alimentação em horas
+        x8 = ultimaGlicemia
 
-        x = np.column_stack((x1, x2, x3)) #agrupa as variaveis preditoras
+        x = np.column_stack((x2, x3, x4, x5, x6, x7, x8)) #agrupa as variaveis preditoras
 
         reg = LinearRegression().fit(x, y) #efetua a regressão
 
@@ -129,24 +157,11 @@ def relatorioAvaliacao(self):
         print(reg.coef_)
         print(reg.intercept_)
 
-        glicemia = reg.predict(np.array([[48, 0, 6]])) #tempo, hora, alimentação
-        print('A previsão é de: ', glicemia)
-
-        #### REGRESSÃO LINEAR SIMPLES####
-        # adicionando os valores dos horários e valores das coletas nos arrays
+        glicemia = reg.predict(np.array([[1,22,2,8,20,4,110]])) #tempo, hora, alimentação
+        print('A previsão de Glicemia é: ', glicemia)
         '''
-        y = np.array(valoresGlicemia)
-        x = np.array(temposColeta)
-       
-
-        # fazendo o ajuste do modelo (Regressão Linear)
-        a, b, r, p_value, std_err = stats.linregress(x, y)
-        y_mod = a * x + b # gerando os pontos do modelo
-
-        glicemia = a * (horaUltimaColeta + 240) + b # gerando a prox. glicemia para as próximas 4h
-        print(f"A próxima glicemia (4h) será de: {glicemia:4.0f}")
-        print('') 
-        '''
+        print('Calculando previsão...')
+        glicemia = 100
 
         # compara com a tabela da escala glicêmica
         if glicemia >= 0 and glicemia <= 49:
