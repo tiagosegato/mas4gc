@@ -42,17 +42,76 @@ class PAAgent(Agent):
 
 # GERA E RELATÓRIO DE AVALIAÇÃO DO PACIENTE - GERANDO A SITUAÇÃO DO PACIENTE
 def relatorioAvaliacao(self):
+
+    #### ULTIMO PACIENTE/COLETA #####
     # consultando dados específicos do último paciente cadastrado
-    document = connection.collection.find({},{"_id": 1, "nome": 1, "sexo": 1, "imc": 1, "diabetes": 1, 
+    pacienteAtual = connection.collection.find({},{"_id": 1, "nome": 1, "sexo": 1, "imc": 1, "diabetes": 1, 
+    "glicemia.valorGlicemia": 1, "glicemia.dataHoraColeta": 1, "glicemia.ultimaAlimentacao": 1}).sort("updateDate", -1).limit(1)
+    
+    for pa in pacienteAtual:
+
+        idPacienteA = pa["_id"]
+        pacienteA = pa["nome"]
+        sexo = pa["sexo"]
+        
+        sexoBin = lambda sexo : int(1) if sexo == "Masculino" else int(0)
+        sexoA = sexoBin(sexo)
+        
+        imcA = round(pa["imc"])
+        
+        diabetes = pa["diabetes"]
+        diabetesBin = lambda diabetes : int(0) if diabetes == "Não tem" else (int(1) if diabetes == "Ignorado" else int(2))
+        diabetesA = diabetesBin(diabetes)
+        
+        coletas = len(pa["glicemia"])
+
+        if (coletas > 0):
+            glicemias = pa["glicemia"]
+            valoresGlicemiaA = [int(g['valorGlicemia']) for g in glicemias] # pegando os valores das glicemias 
+            glicemiaA = valoresGlicemiaA[coletas-1]
+            
+            ultimaGlicemiaA = int(valoresGlicemiaA[coletas-2]) 
+
+            horario = pa["glicemia"]
+            horariosColeta = [h['dataHoraColeta'] for h in horario] # pegando os horários das coletas
+            horaColetaA=[]
+            for h in horariosColeta:
+                hc = datetime.strptime(h, "%Y-%m-%d %H:%M")
+                horaColetaA.append(int(hc.strftime('%H')))
+            horaA = horaColetaA[coletas-1]
+
+            # convertendo os horários em horas
+            for x in horariosColeta:
+                # diferença entre as horas...
+                diferenca = (datetime.strptime(x, '%Y-%m-%d %H:%M')
+                            - datetime.strptime(horariosColeta[0], '%Y-%m-%d %H:%M')).total_seconds() / 3600 #convertendo em horas
+                    
+                tempoA = round(diferenca) 
+            
+            alimentacao = pa["glicemia"]
+            ultimaA = [int(a['ultimaAlimentacao']) for a in horario] # pegando as ultimas alimentações
+            ultimaAlimentacaoA = ultimaA[coletas-1]
+        else: 
+            print('Paciente sem coletas!')
+            ultimaAlimentacaoA = '-'
+            tempoA = '-'
+            horaA = '-'
+            glicemiaA = '-'
+            ultimaGlicemiaA = '-'
+        
+    #### TODOS OS PACIENTES #####
+    # consultando todos os pacientes para gerar o dataframe
+    pacientes = connection.collection.find({},{"_id": 1, "nome": 1, "sexo": 1, "imc": 1, "diabetes": 1, 
     "glicemia.valorGlicemia": 1, "glicemia.dataHoraColeta": 1, "glicemia.ultimaAlimentacao": 1})
 
-    dataframe = pd.DataFrame(columns=['codigo','sexo', 'imc', 'diabetes', 'tempos', 'hora', 'alimentacao', ' ultimaglicemia', 'glicemia'])
+    print('')
+    print('DataFrame:')
+    dataframe = pd.DataFrame(columns=['codigo','sexo', 'imc', 'diabetes', 'tempos', 'hora', 'alimentacao', 
+                                      'ultimaglicemia', 'glicemia'])
     
-    codigoPaciente = 0
-    for p in document:
-
-        # dados recuperados na consulta acima
-        codigoPaciente = codigoPaciente + 1
+    # dados recuperados na consulta acima
+    for p in pacientes:
+       
         idPaciente = p["_id"]
         paciente = p["nome"]
 
@@ -100,52 +159,16 @@ def relatorioAvaliacao(self):
 
         ### CRIANDO O DATAFRAME ###
         for i in range(coletas):
-            df = pd.DataFrame({'codigo':codigoPaciente,'sexo':sexo, 'imc':imc, 'diabetes':diabetes, 'tempos':temposColeta[i], 'hora':horaColeta[i], 
-                            'alimentacao':ultimaAlimentacao[i], ' ultimaglicemia':ultimaGlicemia[i], 'glicemia':valoresGlicemia[i]}, index=[0])
+            df = pd.DataFrame({'codigo':idPaciente,'sexo':sexo, 'imc':imc, 'diabetes':diabetes, 'tempos':temposColeta[i], 
+                               'hora':horaColeta[i], 'alimentacao':ultimaAlimentacao[i], 'ultimaglicemia':ultimaGlicemia[i], 
+                               'glicemia':valoresGlicemia[i]}, index=[0])
             dataframe = pd.concat([dataframe, df], ignore_index=True)
             dataframe.reset_index()
             i+=1
-
-
+    
     print(dataframe)
-    
-    # exibindo os dados coletados
-    '''
     print('')
-    print('DADOS PACIENTE')
-    print('ID Paciente: ', idPaciente)
-    print('Nome: ', paciente)
-    print('Sexo: ', sexo)
-    print('IMC: ', imc)
-    print('Diabetes: ', diabetes)
-    print('')
-    print('DADOS COLETAS GLICEMIAS')
-    print(coletas, 'Coleta(s)')
-    print('Última alimentação: ', ultimaAlimentacao)
-    print('Tempo das coletas: ', temposColeta)
-    print('Hora Coleta: ', horaColeta)
-    print('Glicemias: ', valoresGlicemia)
-    print('Última Glicemia: ', ultimaGlicemia)
-    #print('Coletas: ', horariosColeta)
-    print('')
-    '''
 
-    ###### 2
-    '''
-    pacientes = connection.collection.find({},{"_id": 1, "nome": 1, "sexo": 1, "imc": 1, "diabetes": 1, 
-    "glicemia.valorGlicemia": 1, "glicemia.dataHoraColeta": 1, "glicemia.ultimaAlimentacao": 1})
-
-    pacientes = list(pacientes)
-    
-    df = pd.DataFrame(list(pacientes.items()),columns = ['column1','column2','column3','column4','column5','column6','column7','column8']) 
-    print(df)
-    '''
-
-
-
-            
-   
-    
 
     ### VERIFICA A QUANTIDADE DE GLICEMIAS COLETADAS ###
     # verifica se existem glicemias para aquele paciente    
@@ -176,32 +199,30 @@ def relatorioAvaliacao(self):
     elif coletas > 1:
         
         # CALCULANDO A PROBABILIDADE DA PRÓXIMA GLICEMIA
-        '''
-        #carregando os dados
-        y = valoresGlicemia #glicemias (mg/dL)
-        #x1 = idPaciente
-        x2 = sexo #0-feminino/1-masculino
-        x3 = imc
-        x4 = diabetes #0-não tem/1-ignorado/2-tem diabetes
-        x5 = temposColeta #tempo em horas (ex:6h em 6h)
-        x6 = horaColeta #hora do dia (manhã, tarde, noite...)
-        x7 = ultimaAlimentacao #última alimentação em horas
-        x8 = ultimaGlicemia
-
-        x = np.column_stack((x2, x3, x4, x5, x6, x7, x8)) #agrupa as variaveis preditoras
+        #recebendo os dados do dataset
+        x = dataframe.iloc[:, :-1] #descarta a última coluna (glicemia)
+        y = dataframe.iloc[:, -1] #pega apenas a última (glicemia) 
 
         reg = LinearRegression().fit(x, y) #efetua a regressão
+        
+        proxPrev = 4 #previsão para daqui ? horas
+        glicemia = reg.predict(np.array([[idPacienteA, sexoA, imcA, diabetesA, tempoA+proxPrev, horaA+proxPrev, 
+                                          ultimaAlimentacaoA, glicemiaA]])) 
+        
+        print('Dados para Previsão')
+        print('Nome: ', pacienteA)
+        print('Código: ', idPacienteA)
+        print('Sexo: ', sexoA)
+        print('IMC: ', imcA)
+        print('Diabetes: ', diabetesA)
+        print('Tempo das coletas: ', tempoA+proxPrev)
+        print('Hora Coleta: ', horaA+proxPrev)
+        print('Última alimentação: ', ultimaAlimentacaoA)
+        print('Glicemias Atual: ', glicemiaA)
+        print('Última Glicemia: ', ultimaGlicemiaA)
+        print('')   
+        print('Previsão de Glicemia para', proxPrev,'hs é de: ',glicemia, 'com score de: ',reg.score(x, y))
 
-        #apresentando os dados
-        print(reg.score(x, y))
-        print(reg.coef_)
-        print(reg.intercept_)
-
-        glicemia = reg.predict(np.array([[1,22,2,8,20,4,110]])) #tempo, hora, alimentação
-        print('A previsão de Glicemia é: ', glicemia)
-        '''
-        print('Calculando previsão...')
-        glicemia = 100
 
         # compara com a tabela da escala glicêmica
         if glicemia >= 0 and glicemia <= 49:
@@ -220,6 +241,28 @@ def relatorioAvaliacao(self):
     
     #gerando o Relatório de Avaliação para enviar ao PTA
     #pickle.dumps converte o dict para str
-    situacaoPaciente = pickle.dumps({'ID':idPaciente, 'Paciente': paciente, 'Situacao':situacao}) 
+    situacaoPaciente = pickle.dumps({'ID':idPacienteA, 'Paciente': pacienteA, 'Situacao':situacao}) 
 
     return situacaoPaciente
+
+
+#### OUTRAS FUNÇÕES ####
+def exibeDadosPaciente(self):
+    # exibindo os dados do último paciente
+    print('')
+    print('DADOS ÚLTIMO PACIENTE INSERIDO')
+    print('ID Paciente: ', idPaciente)
+    print('Nome: ', paciente)
+    print('Sexo: ', sexo)
+    print('IMC: ', imc)
+    print('Diabetes: ', diabetes)
+    print('')
+    print('DADOS COLETAS GLICEMIAS')
+    print(coletas, 'Coleta(s)')
+    print('Última alimentação: ', ultimaAlimentacao)
+    print('Tempo das coletas: ', temposColeta)
+    print('Hora Coleta: ', horaColeta)
+    print('Glicemias: ', valoresGlicemia)
+    print('Última Glicemia: ', ultimaGlicemia)
+    print('Coletas: ', horariosColeta)
+    print('')
