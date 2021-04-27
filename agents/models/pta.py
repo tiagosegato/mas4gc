@@ -5,8 +5,8 @@ from pade.acl.messages import ACLMessage
 from pade.acl.aid import AID
 from pade.behaviours.protocols import FipaRequestProtocol
 from pade.behaviours.protocols import TimedBehaviour
-from knowledge.bgrules import GlicemicControl
 from knowledge.bgrules import BloodGlucose
+from knowledge.bgrules import GlicemicControl
 import pickle
 from bson.objectid import ObjectId
 import pymongo
@@ -52,10 +52,10 @@ class PTAgent(Agent):
         message = ACLMessage(ACLMessage.REQUEST)
         message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
         message.add_receiver(AID(name=paa_name))
-        message.set_content('novos pacientes?')
+        message.set_content('Possui Nova Coleta?')
 
         self.comport_request = CompRequest(self, message)
-        self.comport_temp = ComportTemporal(self, 20.0, message)
+        self.comport_temp = ComportTemporal(self, 10.0, message)
 
         self.behaviours.append(self.comport_request)
         self.behaviours.append(self.comport_temp)

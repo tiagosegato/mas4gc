@@ -3,6 +3,7 @@ from sys import argv
 from pade.acl.aid import AID
 from models.paa import PAAgent
 from models.pta import PTAgent
+from models.ama import AMAgent
 
 #INSTANCIANDO OS AGENTES
 if __name__ == '__main__':
@@ -22,8 +23,10 @@ if __name__ == '__main__':
         pta_agent = PTAgent(AID(name=pta_name), paa_name)
         agents.append(pta_agent)
 
-        # AGENTE AMA
-        # TODO a ser criado...
+        #AMA
+        ama_name = 'AMA_{}@localhost:{}'.format(port + 10000, port + 10000)
+        ama_agent = AMAgent(AID(name=ama_name), paa_name)
+        agents.append(ama_agent)
 
         c += 500
 

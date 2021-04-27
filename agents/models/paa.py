@@ -21,7 +21,7 @@ class CompRequest(FipaRequestProtocol):
 
     def handle_request(self, message):
         super(CompRequest, self).handle_request(message)
-        display_message(self.agent.aid.localname, 'Possui novos pacientes?')
+        display_message(self.agent.aid.localname, message.content)
         
         # consulta novos pacientes no Glycon
         situacaoPaciente = relatorioAvaliacao(self)
@@ -31,6 +31,7 @@ class CompRequest(FipaRequestProtocol):
         reply.set_performative(ACLMessage.INFORM)
         reply.set_content(situacaoPaciente)
         self.agent.send(reply)
+
 
 class PAAgent(Agent):
     def __init__(self, aid):
@@ -76,8 +77,8 @@ def relatorioAvaliacao(self):
             horariosColeta = [h['dataHoraColeta'] for h in horario] # pegando os horários das coletas
             horaColetaA=[]
             for h in horariosColeta:
-                hc = datetime.strptime(h, "%Y-%m-%d %H:%M")
-                horaColetaA.append(int(hc.strftime('%H')))
+                dataHoraColetaA = datetime.strptime(h, "%Y-%m-%d %H:%M")
+                horaColetaA.append(int(dataHoraColetaA.strftime('%H')))
             horaA = horaColetaA[coletas-1]
 
             # convertendo os horários em horas
@@ -166,7 +167,7 @@ def relatorioAvaliacao(self):
             dataframe.reset_index()
             i+=1
     
-    print(dataframe)
+    #print(dataframe)
     print('')
 
 
@@ -174,6 +175,7 @@ def relatorioAvaliacao(self):
     # verifica se existem glicemias para aquele paciente    
     if coletas == 0:
         situacao = "semGlicemia" 
+        dataHoraColetaA = "semGlicemia"
     
     # caso tenha apenas uma glicemia coletada
     elif coletas == 1:
@@ -212,14 +214,14 @@ def relatorioAvaliacao(self):
         print('Dados para Previsão')
         print('Nome: ', pacienteA)
         print('Código: ', idPacienteA)
-        print('Sexo: ', sexoA)
-        print('IMC: ', imcA)
-        print('Diabetes: ', diabetesA)
-        print('Tempo das coletas: ', tempoA+proxPrev)
+        #print('Sexo: ', sexoA)
+        #print('IMC: ', imcA)
+        #print('Diabetes: ', diabetesA)
+        #print('Tempo das coletas: ', tempoA+proxPrev)
         print('Hora Coleta: ', horaA+proxPrev)
-        print('Última alimentação: ', ultimaAlimentacaoA)
-        print('Glicemias Atual: ', glicemiaA)
-        print('Última Glicemia: ', ultimaGlicemiaA)
+        #print('Última alimentação: ', ultimaAlimentacaoA)
+        print('Glicemia Atual: ', glicemiaA)
+        #print('Última Glicemia: ', ultimaGlicemiaA)
         print('')   
         print('Previsão de Glicemia para', proxPrev,'hs é de: ',glicemia, 'com score de: ',reg.score(x, y))
 
@@ -237,32 +239,10 @@ def relatorioAvaliacao(self):
             situacao = 'prevHiperG'
         elif glicemia >=301:
             situacao = 'prevHiperGG'
-        else: situacao = 'gInvalida'
+        else: situacao = 'gInvalida'   
     
     #gerando o Relatório de Avaliação para enviar ao PTA
     #pickle.dumps converte o dict para str
-    situacaoPaciente = pickle.dumps({'ID':idPacienteA, 'Paciente': pacienteA, 'Situacao':situacao}) 
+    situacaoPaciente = pickle.dumps({'ID':idPacienteA, 'Paciente': pacienteA, 'Situacao':situacao, 'DataHora':dataHoraColetaA}) 
 
     return situacaoPaciente
-
-
-#### OUTRAS FUNÇÕES ####
-def exibeDadosPaciente(self):
-    # exibindo os dados do último paciente
-    print('')
-    print('DADOS ÚLTIMO PACIENTE INSERIDO')
-    print('ID Paciente: ', idPaciente)
-    print('Nome: ', paciente)
-    print('Sexo: ', sexo)
-    print('IMC: ', imc)
-    print('Diabetes: ', diabetes)
-    print('')
-    print('DADOS COLETAS GLICEMIAS')
-    print(coletas, 'Coleta(s)')
-    print('Última alimentação: ', ultimaAlimentacao)
-    print('Tempo das coletas: ', temposColeta)
-    print('Hora Coleta: ', horaColeta)
-    print('Glicemias: ', valoresGlicemia)
-    print('Última Glicemia: ', ultimaGlicemia)
-    print('Coletas: ', horariosColeta)
-    print('')
