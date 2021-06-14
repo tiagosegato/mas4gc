@@ -23,7 +23,6 @@ class BloodGlucose(Fact):
     ''' 
     pass
  
-
 class GlicemicControl(KnowledgeEngine):
 
     # GLICEMIAS DE ACORDO COM SITUAÇÃO ATUAL
@@ -70,7 +69,8 @@ class GlicemicControl(KnowledgeEngine):
         response = connection.collection.update_one({ "_id": idPaciente }, { "$set": { "tratamento": tratamento } })  
 
 
-    # GLICEMIAS DE ACORDO COM PREVISÃO
+    # GLICEMIAS DE ACORDO COM PREVISÃO 
+    # TODO tem diferença glicemia e previsão da glicemia?
     @Rule(AND(BloodGlucose(glicemia='prevHipoG'), BloodGlucose(idPaciente=MATCH.idPaciente)))
     def bg_prevHipoG(self, idPaciente):
         tratamento = "Glicose: 4 AMP - 50% IV (Prev. 4h)"

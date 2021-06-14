@@ -106,8 +106,8 @@ def relatorioAvaliacao(self):
     "glicemia.valorGlicemia": 1, "glicemia.dataHoraColeta": 1, "glicemia.ultimaAlimentacao": 1})
 
     print('')
-    print('DataFrame:')
-    dataframe = pd.DataFrame(columns=['codigo','sexo', 'imc', 'diabetes', 'tempos', 'hora', 'alimentacao', 
+    #print('DataFrame:')
+    dataframe = pd.DataFrame(columns=['codigo', 'sexo', 'imc', 'diabetes', 'tempos', 'hora', 'alimentacao', 
                                       'ultimaglicemia', 'glicemia'])
     
     # dados recuperados na consulta acima
@@ -168,7 +168,7 @@ def relatorioAvaliacao(self):
             i+=1
     
     #print(dataframe)
-    print('')
+    #print('')
 
 
     ### VERIFICA A QUANTIDADE DE GLICEMIAS COLETADAS ###
@@ -197,35 +197,41 @@ def relatorioAvaliacao(self):
             situacao = 'hiperGG'
         else: situacao = 'gInvalida' 
 
+        #TODO criar setup de configuração de variáveis (glicemia, faixa alvo, horas predição, etc...)
+
     #caso tenha mais de uma glicemia coletada
     elif coletas > 1:
         
         # CALCULANDO A PROBABILIDADE DA PRÓXIMA GLICEMIA
+        #carregando o dataset 50x30
+        dataframe = pd.read_csv('../data/conj3.csv', header=0, sep=';')
+        print(dataframe)
+
         #recebendo os dados do dataset
         x = dataframe.iloc[:, :-1] #descarta a última coluna (glicemia)
         y = dataframe.iloc[:, -1] #pega apenas a última (glicemia) 
 
         reg = LinearRegression().fit(x, y) #efetua a regressão
         
-        proxPrev = 4 #previsão para daqui ? horas
+        proxPrev = 4 #previsão para daqui 4? horas
         glicemia = reg.predict(np.array([[idPacienteA, sexoA, imcA, diabetesA, tempoA+proxPrev, horaA+proxPrev, 
-                                          ultimaAlimentacaoA, glicemiaA]])) 
+                                         ultimaAlimentacaoA, glicemiaA]]))
         
+        '''
         print('Dados para Previsão')
         print('Nome: ', pacienteA)
         print('Código: ', idPacienteA)
-        #print('Sexo: ', sexoA)
-        #print('IMC: ', imcA)
-        #print('Diabetes: ', diabetesA)
-        #print('Tempo das coletas: ', tempoA+proxPrev)
+        print('Sexo: ', sexoA)
+        print('IMC: ', imcA)
+        print('Diabetes: ', diabetesA)
+        print('Tempo das coletas: ', tempoA+proxPrev)
         print('Hora Coleta: ', horaA+proxPrev)
-        #print('Última alimentação: ', ultimaAlimentacaoA)
+        print('Última alimentação: ', ultimaAlimentacaoA)
         print('Glicemia Atual: ', glicemiaA)
-        #print('Última Glicemia: ', ultimaGlicemiaA)
-        print('')   
-        print('Previsão de Glicemia para', proxPrev,'hs é de: ',glicemia, 'com score de: ',reg.score(x, y))
-
-
+        print('Última Glicemia: ', ultimaGlicemiaA)
+        print('') '''  
+        print('Previsão de Glicemia para', proxPrev,'hs é de: ',glicemia, f'com acurácia de: {reg.score(x, y):6.2f}')
+        
         # compara com a tabela da escala glicêmica
         if glicemia >= 0 and glicemia <= 49:
             situacao = 'prevHipoG'

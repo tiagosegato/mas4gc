@@ -23,7 +23,7 @@ class CompRequest(FipaRequestProtocol):
         situacaoPaciente_dict = pickle.loads(message.content) 
         display_message(self.agent.aid.localname, situacaoPaciente_dict) 
 
-        # INDICA O TRATAMENTO DE ACORDO COM A REGRA 
+        # INDICA O MONITORAMENTO DE ACORDO COM A REGRA 
         # instancia e chama a classe de regras!
         engine = CollectionMonitor()
         engine.reset()

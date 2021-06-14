@@ -1,0 +1,84 @@
+{
+    "_id": {
+        "$numberInt": "7"
+    },
+    "glicemia": [
+        {
+            "dataHoraColeta": "2021-06-02 12:00",
+            "tipoColeta": "Capilar",
+            "tipoAlimentacao": "Oral completa",
+            "valorGlicemia": "120",
+            "observacoes": "",
+            "ultimaAlimentacao": "5"
+        },
+        {
+            "dataHoraColeta": "2021-06-02 16:00",
+            "tipoColeta": "Capilar",
+            "tipoAlimentacao": "Zero",
+            "valorGlicemia": "220",
+            "observacoes": "",
+            "ultimaAlimentacao": "0"
+        }
+    ],
+    "aplicacao": [
+        {
+            "dataHoraAplicacao": "2021-06-02 12:10",
+            "tipoAplicacao": "de horario",
+            "viaAdministracao": "intravenosa",
+            "droga": "Insulina Regular",
+            "posologia": "1",
+            "observacoes": ""
+        }
+    ],
+    "prontuario": "MAS4GC2021",
+    "nome": "Tiago Segato",
+    "dataNascimento": {
+        "$date": {
+            "$numberLong": "535420800000"
+        }
+    },
+    "sexo": "Masculino",
+    "peso": {
+        "$numberInt": "67"
+    },
+    "altura": {
+        "$numberInt": "171"
+    },
+    "tipoInternacao": "Clínica",
+    "diabetes": "Ignorado",
+    "insuficienciaRenal": "Ignorado",
+    "corticoide": "Ignorado",
+    "infeccao": "Ignorado",
+    "sindromeDescRespiratorio": "Ignorado",
+    "instabilidadeHemodinamica": "Ignorado",
+    "planoAplicacao": "6#12#18",
+    "observacoes": "",
+    "dataHoraInternacao": {
+        "$date": {
+            "$numberLong": "1622628000000"
+        }
+    },
+    "statusPaciente": "internado",
+    "imc": {
+        "$numberDouble": "22.91303307000445"
+    },
+    "createDate": {
+        "$date": {
+            "$numberLong": "1622638861735"
+        }
+    },
+    "updateDate": {
+        "$date": {
+            "$numberLong": "1622628279567"
+        }
+    },
+    "__v": {
+        "$numberInt": "3"
+    },
+    "monitoramento": {
+        "$date": {
+            "$numberLong": "1622664000000"
+        }
+    },
+    "tratamento": "Insulina Regular: 2 UN - SC (Prev. 4h)"
+}
