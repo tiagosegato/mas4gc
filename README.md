@@ -38,6 +38,6 @@ O MAS4GC faz parte do back-end de um sistema web chamado Glycon (disponível em:
 Figura 4 - Interface do Glycon
 
 Todo o processo pocesso de troca de mensagem entre os sistemas pode ser observado por meio do diagrama de sequências exibido na Figura 5.
-![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/others/pro-5.png?raw=true)
+![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/project/tropos/4-sequence-diagram.png?raw=true)
 Figura 5 - Diagrama de Sequência do MAS4GC.
 
