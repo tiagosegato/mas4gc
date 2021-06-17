@@ -19,7 +19,7 @@ Para executar este protótipo de SMA basta seguir os seguintes passos:
 
 6 - Ignore o pedido de usuário e senha teclando enter para ambas;
 
-A figura 1 representa os passos 3, 4 e 5:
+A figura 1 representa os passos 4, 5 e 6:
 ![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/others/pro-1.png?raw=true)
 Figura 1 - Executando o SMA.
 
@@ -29,11 +29,15 @@ A figura 2 representa o framework PADE em execução:
 ![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/others/pro-2.png?raw=true)
 Figura 2 - PADE em execução.
 
-A figura 3 apresenta o MAS4GC em funcionamento. O primeiro passo é o agente encontrar um novo Paciente cadastrado. na sequência os dados desse paciente é coletado e exibido na tela. O Agente PAA faz uma análise desses dados, gera um relatório e os envia ao agente PTA, que na sequência retorna o recebimento do relatório ap PAA. Nas três últimas linhas é possível ver a troca de mensagens entre os agentes PAA e PTA.
+A figura 3 apresenta o MAS4GC em funcionamento. O primeiro passo é a criação dos três agentes PAA, AMA e PTA. Na sequência o agente PAA recebe as solicitaçÕes de novas coletas, caso tenha ele calcula a previsão desssa glicemia para as próximas 4 horas e informa o respectivo valor. Tal valor é enviado aos agentes PTA e AMA, que por sua vez consulta uma base de regras e por meio do mecanismo de inferência retorna as recomendaçÕes de tratamento e monitoramento mais adequaado de acordo com a situação dos pacientes. 
 ![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/others/pro-3.png?raw=true)
-Figura 3 - Funcionamento do MAS4GC.
+Figura 3 - Funcionamento resumido do MAS4GC.
 
-O diagrama de sequência exibido na figura 4 representa tal troca de mensagem entre os agentes.
+O MAS4GC faz parte do back-end de um sistema web chamado Glycon (disponível em: http://glycon.herokuapp.com/), esse sistema serve de interface entre os profissionais da saúde com o sistema multiagente. A Figura 4 apresenta as recomendações de monitoramento e tratamento feitas pelo MAS4GC.
+![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/others/pro-4.png?raw=true)
+Figura 4 - Interface do Glycon
+
+Todo o processo pocesso de troca de mensagem entre os sistemas pode ser observado por meio do diagrama de sequências exibido na Figura 5.
 ![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/others/pro-5.png?raw=true)
-Figura 4 - Diagrama de Sequência: Troca de mensagens entre os agentes.
+Figura 5 - Diagrama de Sequência do MAS4GC.
 
