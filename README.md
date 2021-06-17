@@ -1,18 +1,23 @@
 # MAS4GC
 
-MAS4GC é o acrônimo de MultiAgent System for Glicemic Control e como o próprio nome diz, é um sistema multiagente para controle glicêmico de pacientes internados em UTI.
+MAS4GC é o acrônimo de MultiAgent System for Glicemic Control e como o próprio nome diz, é um sistema multiagente para controle glicêmico de pacientes internados em UTI. Tal projeto foi implementado por meio da linguagem Python e faz uso dos frameworks PADE e Experta.
+
+Nesse repositório está disponível todo o código fonte no diretório _agents_. O dataset utilizado para testes e complemento para o modelo de predição se encontra em _data_. As pastas _pade_ e _experta_ contém os frameworks utilizados. E em _project_ alguns dos diagramas utilizados na modelagem desse projeto, como diagramas de classes, sequência, atividades, a arquitetura da solução e os diagramas da modelagem Tropos.
+
 
 Para executar este protótipo de SMA basta seguir os seguintes passos:
 
-1 - Instalar (ou ter instalado) o  framework PADE (Python Agent DEvelopment), conforme a documentação: https://pade.readthedocs.io/en/latest/user/instalacao.html#installation-page
+1 - Instalar (ou ter instalado) o framework PADE (Python Agent DEvelopment), conforme a documentação: https://pade.readthedocs.io/en/latest/user/instalacao.html#installation-page;
 
-2 - Clonar o projeto na sua máquina
+2 - Instalar (ou ter instalado) o framework Experta, disponível em: https://experta.readthedocs.io/en/latest/index.html;
 
-3 - Utilizando o Terminal/Console/CMD acesse o diretório mas4cg/agents
+3 - Clonar o projeto na sua máquina;
 
-4 - Uma vez na pasta agents execute: pade start-runtime --num 1 --port 20000 sma-mas4gc.py
+4 - Utilizando o Terminal/Console/CMD acesse o diretório mas4cg/agents;
 
-5 - Ignore o pedido de usuário e senha teclando enter para ambas
+5 - Uma vez na pasta agents execute: pade start-runtime --num 1 --port 20000 sma-mas4gc.py;
+
+6 - Ignore o pedido de usuário e senha teclando enter para ambas;
 
 A figura 1 representa os passos 3, 4 e 5:
 ![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/others/pro-1.png?raw=true)
