@@ -205,7 +205,7 @@ def relatorioAvaliacao(self):
         # CALCULANDO A PROBABILIDADE DA PRÓXIMA GLICEMIA
         #carregando o dataset 50x30
         dataframe = pd.read_csv('../data/conj3.csv', header=0, sep=';')
-        print(dataframe)
+        #print(dataframe)
 
         #recebendo os dados do dataset
         x = dataframe.iloc[:, :-1] #descarta a última coluna (glicemia)
