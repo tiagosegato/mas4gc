@@ -27,10 +27,11 @@ class CompRequest(FipaRequestProtocol):
         # instancia e chama a classe de regras!
         engine = CollectionMonitor()
         engine.reset()
-        situacao = situacaoPaciente_dict['Situacao']
+        #situacao = situacaoPaciente_dict['Situacao']
+        glicemia = int(situacaoPaciente_dict['Glicemia'])
         idPaciente = situacaoPaciente_dict['ID']
         dataHora = situacaoPaciente_dict['DataHora']
-        engine.declare(BloodGlucose(glicemia=situacao,  idPaciente=idPaciente, dataHora=dataHora))
+        engine.declare(BloodGlucose(glicemia=glicemia,  idPaciente=idPaciente, dataHora=dataHora))
         engine.run()
 
 

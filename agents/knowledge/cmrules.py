@@ -10,108 +10,107 @@ class BloodGlucose(Fact):
     """ Informações sobre controle glicêmico"""
     ### ESCALA DE VALORES GLICÊMICOS (Medidadas isoladas - apenas glicemia)
     '''
-     CÓDIGO |      EPISÓDIO            |   VALORES    |    COLETA      1      2     3     |          TRATAMENTO  
-    hipoG   | Hipoglicemia Grave       | 0 até 49     | 6 a 24 x dia  (4h)  (2h)  (1h)    | 4 ampolas de glicose a 50% IV
-    hipoL   | Hipoglicemia Leve        | 50 até 99    | 3 a 6 x dia   (8h)  (6h)  (4h)    | 2 ampolas de glicose a 50% IV
-    gAlvo   | Glicemia Normal          | 100 até 200  | 1 a 3 x dia   (24h) (16h) (8h)    | manter observação
-    hiperL  | Hiperglicemia Leve       | 201 até 250  | 3 a 6 x dia   (8h)  (6h)  (4h)    | 2 unidade de insulina regular SC
-    hiperG  | Hiperglicemia Grave      | 251 até 300  | 6 a 24 x dia  (4h)  (2h)  (1h)    | 4 unidade de insulina regular SC
-    hiperGG | Hiperglicemia Gravíssima | acima de 301 | 24 a 48 x dia (1h)(45min)(30min)  | 6 unidade de insulina regular SC
+     VALORES  |      EPISÓDIO            | COLETA    
+      0-30    | Hipoglicemia Grave       | 1h     
+      30-40   | Hipoglicemia Grave       | 2h
+      40-50   | Hipoglicemia Leve        | 2h
+      50-60   | Hipoglicemia Leve        | 4h 
+      60-70   | Hipoglicemia Leve        | 4h
+      70-80   | Normoglicemia            | 6h
+      80-90   | Normoglicemia            | 8h
+      90-120  | Normoglicemia            | 8h
+      120-140 | Normoglicemia            | 8h
+      140-160 | Hiperglicemia Leve       | 6h
+      160-180 | Hiperglicemia Leve       | 4h
+      180-200 | Hiperglicemia Grave      | 4h
+      200-220 | Hiperglicemia Grave      | 2h
+      220-240 | Hiperglicemia Grave      | 2h
+      240-250 | Hiperglicemia Grave      | 1h
+      > 250   | Hiperglicemia Gravíssima | 1h
 
+    EXTRA
     regra 1 = 1 glicemia fora do alvo -> coletar novamente em 1h
     regra 2 = 2 fora - diminui 2 hs do padrão
     e assim sucessivamente... 
+
     ''' 
     pass
  
 class CollectionMonitor(KnowledgeEngine):
 
+    # 11 REGRAS #
     # COLETAS DE ACORDO COM SITUAÇÃO ATUAL
-    @Rule(AND(BloodGlucose(glicemia='hipoG'), BloodGlucose(idPaciente=MATCH.idPaciente), BloodGlucose(dataHora=MATCH.dataHora)))
-    def cm_hipoG(self, idPaciente, dataHora):
+    @Rule(AND(BloodGlucose(glicemia=MATCH.glicemia), TEST(lambda glicemia: glicemia >= 0 and glicemia <= 30), 
+              BloodGlucose(idPaciente=MATCH.idPaciente), BloodGlucose(dataHora=MATCH.dataHora)))
+    def cm_rule1(self, idPaciente, dataHora):
         monitoramento = dataHora + timedelta(hours=1)
         print('Próxima coleta: ', monitoramento)
         print('')
         response = connection.collection.update_one({ "_id": idPaciente }, { "$set": { "monitoramento": monitoramento } }) 
 
-    @Rule(AND(BloodGlucose(glicemia='hipoL'), BloodGlucose(idPaciente=MATCH.idPaciente), BloodGlucose(dataHora=MATCH.dataHora)))
-    def cm_hipoL(self, idPaciente, dataHora):
+    @Rule(AND(BloodGlucose(glicemia=MATCH.glicemia), TEST(lambda glicemia: glicemia > 30 and glicemia <= 50), 
+              BloodGlucose(idPaciente=MATCH.idPaciente), BloodGlucose(dataHora=MATCH.dataHora)))
+    def cm_rule2(self, idPaciente, dataHora):
+        monitoramento = dataHora + timedelta(hours=2)
+        print('Próxima coleta: ', monitoramento)
+        print('')
+        response = connection.collection.update_one({ "_id": idPaciente }, { "$set": { "monitoramento": monitoramento } })
+
+    @Rule(AND(BloodGlucose(glicemia=MATCH.glicemia), TEST(lambda glicemia: glicemia > 50 and glicemia <= 70), 
+              BloodGlucose(idPaciente=MATCH.idPaciente), BloodGlucose(dataHora=MATCH.dataHora)))
+    def cm_rule3(self, idPaciente, dataHora):
         monitoramento = dataHora + timedelta(hours=4)
         print('Próxima coleta: ', monitoramento)
         print('')
-        response = connection.collection.update_one({ "_id": idPaciente }, { "$set": { "monitoramento": monitoramento } }) 
+        response = connection.collection.update_one({ "_id": idPaciente }, { "$set": { "monitoramento": monitoramento } })
 
-    @Rule(AND(BloodGlucose(glicemia='gAlvo'), BloodGlucose(idPaciente=MATCH.idPaciente), BloodGlucose(dataHora=MATCH.dataHora)))
-    def cm_gAlvo(self, idPaciente, dataHora):
+    @Rule(AND(BloodGlucose(glicemia=MATCH.glicemia), TEST(lambda glicemia: glicemia > 70 and glicemia <= 80), 
+              BloodGlucose(idPaciente=MATCH.idPaciente), BloodGlucose(dataHora=MATCH.dataHora)))
+    def cm_rule4(self, idPaciente, dataHora):
+        monitoramento = dataHora + timedelta(hours=6)
+        print('Próxima coleta: ', monitoramento)
+        print('')
+        response = connection.collection.update_one({ "_id": idPaciente }, { "$set": { "monitoramento": monitoramento } })
+
+    @Rule(AND(BloodGlucose(glicemia=MATCH.glicemia), TEST(lambda glicemia: glicemia > 80 and glicemia <= 140), 
+              BloodGlucose(idPaciente=MATCH.idPaciente), BloodGlucose(dataHora=MATCH.dataHora)))
+    def cm_rule5(self, idPaciente, dataHora):
         monitoramento = dataHora + timedelta(hours=8)
         print('Próxima coleta: ', monitoramento)
         print('')
-        response = connection.collection.update_one({ "_id": idPaciente }, { "$set": { "monitoramento": monitoramento } }) 
+        response = connection.collection.update_one({ "_id": idPaciente }, { "$set": { "monitoramento": monitoramento } })
 
-    @Rule(AND(BloodGlucose(glicemia='hiperL'), BloodGlucose(idPaciente=MATCH.idPaciente), BloodGlucose(dataHora=MATCH.dataHora)))
-    def cm_hiperL(self, idPaciente, dataHora):
+    @Rule(AND(BloodGlucose(glicemia=MATCH.glicemia), TEST(lambda glicemia: glicemia > 140 and glicemia <= 160), 
+              BloodGlucose(idPaciente=MATCH.idPaciente), BloodGlucose(dataHora=MATCH.dataHora)))
+    def cm_rule6(self, idPaciente, dataHora):
+        monitoramento = dataHora + timedelta(hours=6)
+        print('Próxima coleta: ', monitoramento)
+        print('')
+        response = connection.collection.update_one({ "_id": idPaciente }, { "$set": { "monitoramento": monitoramento } })
+
+    @Rule(AND(BloodGlucose(glicemia=MATCH.glicemia), TEST(lambda glicemia: glicemia > 160 and glicemia <= 200), 
+              BloodGlucose(idPaciente=MATCH.idPaciente), BloodGlucose(dataHora=MATCH.dataHora)))
+    def cm_rule7(self, idPaciente, dataHora):
         monitoramento = dataHora + timedelta(hours=4)
         print('Próxima coleta: ', monitoramento)
         print('')
-        response = connection.collection.update_one({ "_id": idPaciente }, { "$set": { "monitoramento": monitoramento } }) 
+        response = connection.collection.update_one({ "_id": idPaciente }, { "$set": { "monitoramento": monitoramento } })
 
-    @Rule(AND(BloodGlucose(glicemia='hiperG'), BloodGlucose(idPaciente=MATCH.idPaciente), BloodGlucose(dataHora=MATCH.dataHora)))
-    def cm_hiperG(self, idPaciente, dataHora):
+    @Rule(AND(BloodGlucose(glicemia=MATCH.glicemia), TEST(lambda glicemia: glicemia > 200 and glicemia <= 240), 
+              BloodGlucose(idPaciente=MATCH.idPaciente), BloodGlucose(dataHora=MATCH.dataHora)))
+    def cm_rule8(self, idPaciente, dataHora):
+        monitoramento = dataHora + timedelta(hours=2)
+        print('Próxima coleta: ', monitoramento)
+        print('')
+        response = connection.collection.update_one({ "_id": idPaciente }, { "$set": { "monitoramento": monitoramento } })
+
+    @Rule(AND(BloodGlucose(glicemia=MATCH.glicemia), TEST(lambda glicemia: glicemia > 240), 
+              BloodGlucose(idPaciente=MATCH.idPaciente), BloodGlucose(dataHora=MATCH.dataHora)))
+    def cm_rule9(self, idPaciente, dataHora):
         monitoramento = dataHora + timedelta(hours=1)
         print('Próxima coleta: ', monitoramento)
         print('')
-        response = connection.collection.update_one({ "_id": idPaciente }, { "$set": { "monitoramento": monitoramento } }) 
-
-    @Rule(AND(BloodGlucose(glicemia='hiperGG'), BloodGlucose(idPaciente=MATCH.idPaciente), BloodGlucose(dataHora=MATCH.dataHora)))
-    def cm_hiperGG(self, idPaciente, dataHora):
-        monitoramento = dataHora + timedelta(hours=0.5)
-        print('Próxima coleta: ', monitoramento)
-        print('')
-        response = connection.collection.update_one({ "_id": idPaciente }, { "$set": { "monitoramento": monitoramento } }) 
-
-
-    # COLETAS DE ACORDO COM PREVISÃO
-    @Rule(AND(BloodGlucose(glicemia='prevHipoG'), BloodGlucose(idPaciente=MATCH.idPaciente), BloodGlucose(dataHora=MATCH.dataHora)))
-    def cm_prevHipoG(self, idPaciente, dataHora):
-        monitoramento = dataHora + timedelta(hours=1)
-        print('Próxima coleta: ', monitoramento)
-        print('')
-        response = connection.collection.update_one({ "_id": idPaciente }, { "$set": { "monitoramento": monitoramento } }) 
-
-    @Rule(AND(BloodGlucose(glicemia='prevHipoL'), BloodGlucose(idPaciente=MATCH.idPaciente), BloodGlucose(dataHora=MATCH.dataHora)))
-    def cm_prevHipoL(self, idPaciente, dataHora):
-        monitoramento = dataHora + timedelta(hours=4)
-        print('Próxima coleta: ', monitoramento)
-        print('')
-        response = connection.collection.update_one({ "_id": idPaciente }, { "$set": { "monitoramento": monitoramento } }) 
-
-    @Rule(AND(BloodGlucose(glicemia='prevgAlvo'), BloodGlucose(idPaciente=MATCH.idPaciente), BloodGlucose(dataHora=MATCH.dataHora)))
-    def cm_prevgAlvo(self, idPaciente, dataHora):
-        monitoramento = dataHora + timedelta(hours=8)
-        print('Próxima coleta: ', monitoramento)
-        print('')
-        response = connection.collection.update_one({ "_id": idPaciente }, { "$set": { "monitoramento": monitoramento } }) 
-
-    @Rule(AND(BloodGlucose(glicemia='prevHiperL'), BloodGlucose(idPaciente=MATCH.idPaciente), BloodGlucose(dataHora=MATCH.dataHora)))
-    def cm_prevHiperL(self, idPaciente, dataHora):
-        monitoramento = dataHora + timedelta(hours=4)
-        print('Próxima coleta: ', monitoramento)
-        print('')
-        response = connection.collection.update_one({ "_id": idPaciente }, { "$set": { "monitoramento": monitoramento } }) 
-
-    @Rule(AND(BloodGlucose(glicemia='prevHiperG'), BloodGlucose(idPaciente=MATCH.idPaciente), BloodGlucose(dataHora=MATCH.dataHora)))
-    def cm_prevHiperG(self, idPaciente, dataHora):
-        monitoramento = dataHora + timedelta(hours=1)
-        print('Próxima coleta: ', monitoramento)
-        print('')
-        response = connection.collection.update_one({ "_id": idPaciente }, { "$set": { "monitoramento": monitoramento } }) 
-
-    @Rule(AND(BloodGlucose(glicemia='prevHiperGG'), BloodGlucose(idPaciente=MATCH.idPaciente), BloodGlucose(dataHora=MATCH.dataHora)))
-    def cm_prevHiperGG(self, idPaciente, dataHora):
-        monitoramento = dataHora + timedelta(hours=0.5)
-        print('Próxima coleta: ', monitoramento)
-        print('')
-        response = connection.collection.update_one({ "_id": idPaciente }, { "$set": { "monitoramento": monitoramento } }) 
+        response = connection.collection.update_one({ "_id": idPaciente }, { "$set": { "monitoramento": monitoramento } })
 
 # GCOLETAS COM SITUAÇÕES INCOMUNS
     @Rule(AND(BloodGlucose(glicemia='semGlicemia'), BloodGlucose(idPaciente=MATCH.idPaciente)))

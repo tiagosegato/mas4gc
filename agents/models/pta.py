@@ -29,7 +29,7 @@ class CompRequest(FipaRequestProtocol):
         engine.reset()
         situacao = situacaoPaciente_dict['Situacao']
         idPaciente = situacaoPaciente_dict['ID']
-        engine.declare(BloodGlucose(glicemia=situacao,  idPaciente=idPaciente))
+        engine.declare(BloodGlucose(situacao=situacao,  idPaciente=idPaciente))
         engine.run()
 
 

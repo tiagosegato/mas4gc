@@ -176,6 +176,7 @@ def relatorioAvaliacao(self):
     if coletas == 0:
         situacao = "semGlicemia" 
         dataHoraColetaA = "semGlicemia"
+        glicemia = "semGlicemia" 
     
     # caso tenha apenas uma glicemia coletada
     elif coletas == 1:
@@ -183,17 +184,17 @@ def relatorioAvaliacao(self):
         glicemia = int(glicemias[0]['valorGlicemia'])
 
         # compara com a tabela da escala glicêmica
-        if glicemia >= 0 and glicemia <= 49:
+        if glicemia >= 0 and glicemia <= 40:
             situacao = 'hipoG'
-        elif glicemia >=50 and glicemia <= 99:
+        elif glicemia > 40 and glicemia <= 70:
             situacao = 'hipoL'
-        elif glicemia >=100 and glicemia <= 200:
+        elif glicemia > 70 and glicemia <= 140:
             situacao = 'gAlvo'
-        elif glicemia >=201 and glicemia <= 250:
+        elif glicemia > 140 and glicemia <= 180:
             situacao = 'hiperL'
-        elif glicemia >=251 and glicemia <= 300:
+        elif glicemia > 180 and glicemia <= 250:
             situacao = 'hiperG'
-        elif glicemia >=301:
+        elif glicemia > 250:
             situacao = 'hiperGG'
         else: situacao = 'gInvalida' 
 
@@ -233,22 +234,22 @@ def relatorioAvaliacao(self):
         print('Previsão de Glicemia para', proxPrev,'hs é de: ',glicemia, f'com acurácia de: {reg.score(x, y):6.2f}')
         
         # compara com a tabela da escala glicêmica
-        if glicemia >= 0 and glicemia <= 49:
+        if glicemia >= 0 and glicemia <= 40:
             situacao = 'prevHipoG'
-        elif glicemia >=50 and glicemia <= 99:
+        elif glicemia > 40 and glicemia <= 70:
             situacao = 'prevHipoL'
-        elif glicemia >=100 and glicemia <= 200:
+        elif glicemia > 70 and glicemia <= 140:
             situacao = 'prevgAlvo'
-        elif glicemia >=201 and glicemia <= 250:
+        elif glicemia > 140 and glicemia <= 180:
             situacao = 'prevHiperL'
-        elif glicemia >=251 and glicemia <= 300:
+        elif glicemia > 180 and glicemia <= 250:
             situacao = 'prevHiperG'
-        elif glicemia >=301:
+        elif glicemia > 250:
             situacao = 'prevHiperGG'
         else: situacao = 'gInvalida'   
     
     #gerando o Relatório de Avaliação para enviar ao PTA
     #pickle.dumps converte o dict para str
-    situacaoPaciente = pickle.dumps({'ID':idPacienteA, 'Paciente': pacienteA, 'Situacao':situacao, 'DataHora':dataHoraColetaA}) 
+    situacaoPaciente = pickle.dumps({'ID':idPacienteA, 'Paciente': pacienteA, 'Glicemia':glicemia, 'Situacao':situacao, 'DataHora':dataHoraColetaA}) 
 
     return situacaoPaciente
