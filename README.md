@@ -25,7 +25,7 @@ Para executar este protótipo de SMA basta seguir os seguintes passos:
 
 7 - Ignore o pedido de usuário e senha teclando enter para ambas;
 
-A figura 1 representa os passos 4, 5 e 6:
+A figura 1 representa os passos 5, 6 e 7:
 ![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/others/pro-1.png?raw=true)
 Figura 1 - Executando o SMA.
 
