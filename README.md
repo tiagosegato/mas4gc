@@ -11,13 +11,19 @@ Para executar este protótipo de SMA basta seguir os seguintes passos:
 
 2 - Instalar (ou ter instalado) o framework Experta, disponível em: https://experta.readthedocs.io/en/latest/index.html;
 
-3 - Clonar o projeto na sua máquina;
+3 - Instalar (ou ter instalado) o PyMongo, Pandas, NumPy e scikit-learn por meio dos comandos: 
+- pip install pymongo;
+- pip install pandas
+- pip install numpy;
+- pip install scikit-learn.
 
-4 - Utilizando o Terminal/Console/CMD acesse o diretório mas4cg/agents;
+4 - Clonar o projeto na sua máquina;
 
-5 - Uma vez na pasta agents execute: pade start-runtime --num 1 --port 20000 main.py;
+5 - Utilizando o Terminal/Console/CMD acesse o diretório mas4cg/agents;
 
-6 - Ignore o pedido de usuário e senha teclando enter para ambas;
+6 - Uma vez na pasta agents execute: pade start-runtime --num 1 --port 20000 main.py;
+
+7 - Ignore o pedido de usuário e senha teclando enter para ambas;
 
 A figura 1 representa os passos 4, 5 e 6:
 ![executando o projeto](https://github.com/tiagosegato/mas4gc/blob/main/others/pro-1.png?raw=true)
